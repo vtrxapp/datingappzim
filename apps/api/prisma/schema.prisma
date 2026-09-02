@@ -1,0 +1,298 @@
+// Zimbabwe dating app MVP — primary datastore schema.
+// Conventions:
+//  - UUID primary keys everywhere.
+//  - Soft-delete on User via `deletedAt` (never hard-delete user data on
+//    account closure — history stays for safety/audit purposes).
+//  - Match.userOneId/userTwoId is always stored with the lexicographically
+//    smaller UUID first (enforced in matching.service.ts) so a pair can
+//    never produce two separate Match rows.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum City {
+  HARARE
+  BULAWAYO
+  OTHER
+}
+
+enum RelationshipIntent {
+  MARRIAGE
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
+enum MatchUserStatus {
+  PENDING
+  INTERESTED
+  PASSED
+}
+
+enum ReportReason {
+  FAKE_PROFILE
+  INAPPROPRIATE_MESSAGES
+  INAPPROPRIATE_PHOTOS
+  HARASSMENT
+  SCAM_OR_SOLICITATION
+  UNDERAGE
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  ACTIONED
+  DISMISSED
+}
+
+enum SafetyCheckinStatus {
+  SCHEDULED
+  CONFIRMED_SAFE
+  MISSED
+  CANCELLED
+}
+
+enum SubscriptionPlanId {
+  FREE
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING_PAYMENT
+}
+
+enum PaymentProviderId {
+  MOCK
+  PAYNOW
+}
+
+enum PaymentTransactionStatus {
+  CREATED
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+model User {
+  id                String    @id @default(uuid())
+  phone             String    @unique
+  phoneVerifiedAt   DateTime?
+  role              UserRole  @default(USER)
+  status            UserStatus @default(ACTIVE)
+  onboardingComplete Boolean  @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  profile                Profile?
+  questionnaireResponses QuestionnaireResponse[]
+  matchesAsOne           Match[]         @relation("MatchUserOne")
+  matchesAsTwo           Match[]         @relation("MatchUserTwo")
+  sentMessages           Message[]
+  reportsFiled           Report[]        @relation("ReportReporter")
+  reportsAgainst         Report[]        @relation("ReportReported")
+  reviewedReports        Report[]        @relation("ReportReviewer")
+  blocksInitiated        Block[]         @relation("BlockBlocker")
+  blocksReceived         Block[]         @relation("BlockBlocked")
+  safetyCheckins         SafetyCheckin[]
+  subscriptions          Subscription[]
+
+  @@index([phone])
+}
+
+model Profile {
+  id                      String             @id @default(uuid())
+  userId                  String             @unique
+  user                    User               @relation(fields: [userId], references: [id])
+  displayName             String
+  dateOfBirth             DateTime
+  gender                  Gender
+  seekingGender           Gender
+  city                    City
+  areaText                String?
+  bio                     String?
+  relationshipIntent      RelationshipIntent @default(MARRIAGE)
+  seekingAgeMin           Int
+  seekingAgeMax           Int
+  verificationStatus      VerificationStatus @default(UNVERIFIED)
+  verificationDocumentUrl String?
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  photos ProfilePhoto[]
+
+  @@index([city])
+  @@index([gender, seekingGender])
+}
+
+model ProfilePhoto {
+  id        String   @id @default(uuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  url       String
+  position  Int
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, position])
+}
+
+model QuestionnaireResponse {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  questionKey String
+  answerValue Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, questionKey])
+}
+
+model Match {
+  id            String          @id @default(uuid())
+  userOneId     String
+  userOne       User            @relation("MatchUserOne", fields: [userOneId], references: [id])
+  userTwoId     String
+  userTwo       User            @relation("MatchUserTwo", fields: [userTwoId], references: [id])
+  userOneStatus MatchUserStatus @default(PENDING)
+  userTwoStatus MatchUserStatus @default(PENDING)
+  score         Float
+  introducedAt  DateTime        @default(now())
+  mutualAt      DateTime?
+  createdAt     DateTime        @default(now())
+
+  messages       Message[]
+  safetyCheckins SafetyCheckin[]
+  reports        Report[]
+
+  @@unique([userOneId, userTwoId])
+  @@index([userOneId])
+  @@index([userTwoId])
+  @@index([introducedAt])
+}
+
+model Message {
+  id        String    @id @default(uuid())
+  matchId   String
+  match     Match     @relation(fields: [matchId], references: [id])
+  senderId  String
+  sender    User      @relation(fields: [senderId], references: [id])
+  content   String?
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  @@index([matchId, createdAt])
+}
+
+model Report {
+  id                String        @id @default(uuid())
+  reporterId        String
+  reporter          User          @relation("ReportReporter", fields: [reporterId], references: [id])
+  reportedUserId    String
+  reportedUser      User          @relation("ReportReported", fields: [reportedUserId], references: [id])
+  matchId           String?
+  match             Match?        @relation(fields: [matchId], references: [id])
+  reason            ReportReason
+  details           String?
+  status            ReportStatus  @default(PENDING)
+  reviewedByAdminId String?
+  reviewedByAdmin   User?         @relation("ReportReviewer", fields: [reviewedByAdminId], references: [id])
+  reviewedAt        DateTime?
+  createdAt         DateTime      @default(now())
+
+  @@index([status])
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  blockerId String
+  blocker   User     @relation("BlockBlocker", fields: [blockerId], references: [id])
+  blockedId String
+  blocked   User     @relation("BlockBlocked", fields: [blockedId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model SafetyCheckin {
+  id                 String              @id @default(uuid())
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  matchId            String?
+  match              Match?              @relation(fields: [matchId], references: [id])
+  safetyContactName  String
+  safetyContactPhone String
+  meetingTime        DateTime
+  checkinTime        DateTime
+  status             SafetyCheckinStatus @default(SCHEDULED)
+  alertSentAt        DateTime?
+  createdAt          DateTime            @default(now())
+
+  @@index([userId])
+  @@index([status, checkinTime])
+}
+
+model Subscription {
+  id          String             @id @default(uuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id])
+  plan        SubscriptionPlanId @default(FREE)
+  status      SubscriptionStatus @default(ACTIVE)
+  provider    PaymentProviderId?
+  providerRef String?
+  startedAt   DateTime           @default(now())
+  expiresAt   DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  paymentTransactions PaymentTransaction[]
+
+  @@index([userId])
+}
+
+model PaymentTransaction {
+  id             String                   @id @default(uuid())
+  subscriptionId String
+  subscription   Subscription             @relation(fields: [subscriptionId], references: [id])
+  provider       PaymentProviderId
+  providerRef    String?
+  pollUrl        String?
+  amountUsd      Float
+  status         PaymentTransactionStatus @default(CREATED)
+  rawPayload     Json?
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  @@index([subscriptionId])
+}

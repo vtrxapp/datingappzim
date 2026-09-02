@@ -1,0 +1,82 @@
+import {
+  City,
+  Gender,
+  MatchUserStatus,
+  ReportReason,
+  SafetyCheckinStatus,
+  SubscriptionPlanId,
+  SubscriptionStatus,
+  VerificationStatus,
+} from './enums';
+
+/** Shape returned to a client viewing another user's profile (never includes phone). */
+export interface ProfileSummaryDto {
+  userId: string;
+  displayName: string;
+  age: number;
+  city: City;
+  bio: string | null;
+  photos: string[];
+  verificationStatus: VerificationStatus;
+  aboutAnswers: { key: string; label: string; value: string }[];
+}
+
+export interface MatchCandidateDto {
+  matchId: string;
+  profile: ProfileSummaryDto;
+  score: number;
+  myStatus: MatchUserStatus;
+  theirStatus: MatchUserStatus;
+  isMutual: boolean;
+  introducedAt: string;
+}
+
+export interface MessageDto {
+  id: string;
+  matchId: string;
+  senderId: string;
+  content: string | null;
+  imageUrl: string | null;
+  createdAt: string;
+  readAt: string | null;
+}
+
+export interface SafetyCheckinDto {
+  id: string;
+  matchId: string | null;
+  safetyContactName: string;
+  safetyContactPhone: string;
+  meetingTime: string;
+  checkinTime: string;
+  status: SafetyCheckinStatus;
+}
+
+export interface CreateReportDto {
+  reportedUserId: string;
+  matchId?: string;
+  reason: ReportReason;
+  details?: string;
+}
+
+export interface SubscriptionStateDto {
+  plan: SubscriptionPlanId;
+  status: SubscriptionStatus;
+  expiresAt: string | null;
+  dailyIntroductionsRemaining: number;
+  canSeeWhoIsInterestedFirst: boolean;
+}
+
+export interface AuthTokensIssuedDto {
+  userId: string;
+  isNewUser: boolean;
+  onboardingComplete: boolean;
+}
+
+export interface MeDto {
+  userId: string;
+  phone: string;
+  role: 'USER' | 'ADMIN';
+  onboardingComplete: boolean;
+}
+
+export { Gender };

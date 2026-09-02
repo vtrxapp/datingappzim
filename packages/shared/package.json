@@ -1,0 +1,15 @@
+{
+  "name": "shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Types, enums and product config shared between apps/api and apps/web",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
