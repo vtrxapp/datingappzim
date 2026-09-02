@@ -26,7 +26,11 @@ export function scoreCandidate(input: ScoringInput): number {
   const sharedValues = input.myCoreValues.filter((v) => input.candidateCoreValues.includes(v));
   score += sharedValues.length * MATCHING_CONFIG.pointsPerSharedCoreValue;
 
-  const sharedHobbies = input.myHobbies.filter((h) => input.candidateHobbies.includes(h));
+  // Hobbies are free text (custom entries allowed), so compare case/whitespace-insensitively —
+  // "Hiking" and "hiking " should still count as the same answer.
+  const normalize = (s: string) => s.trim().toLowerCase();
+  const candidateHobbiesNormalized = input.candidateHobbies.map(normalize);
+  const sharedHobbies = input.myHobbies.filter((h) => candidateHobbiesNormalized.includes(normalize(h)));
   score += sharedHobbies.length * MATCHING_CONFIG.pointsPerSharedHobby;
 
   if (input.candidateVerificationStatus === VerificationStatus.VERIFIED) {

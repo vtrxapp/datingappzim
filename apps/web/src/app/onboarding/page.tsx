@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { QUESTIONNAIRE, QuestionDefinition } from 'shared';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
+import { HobbiesInput } from '@/components/HobbiesInput';
 
 type AnswerMap = Record<string, unknown>;
 
@@ -231,7 +232,14 @@ function QuestionStep({
         </div>
       )}
 
-      {question.type === 'MULTI_SELECT' && (
+      {question.type === 'MULTI_SELECT' && question.allowCustomValues && (
+        <HobbiesInput
+          value={Array.isArray(value) ? (value as string[]) : []}
+          onChange={(next) => onChange(next)}
+        />
+      )}
+
+      {question.type === 'MULTI_SELECT' && !question.allowCustomValues && (
         <div className="space-y-2">
           {question.options?.map((opt) => {
             const selected: string[] = Array.isArray(value) ? (value as string[]) : [];

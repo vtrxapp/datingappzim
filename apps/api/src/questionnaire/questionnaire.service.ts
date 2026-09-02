@@ -102,9 +102,19 @@ export class QuestionnaireService {
         break;
       }
       case 'MULTI_SELECT': {
-        const allowed = question.options?.map((o) => o.value) ?? [];
-        if (!Array.isArray(value) || value.some((v) => !allowed.includes(v))) {
+        if (!Array.isArray(value)) {
           throw new BadRequestException(`Invalid selection for ${question.key}`);
+        }
+        if (question.allowCustomValues) {
+          const valid = value.every((v) => typeof v === 'string' && v.trim().length > 0 && v.length <= 40);
+          if (!valid) {
+            throw new BadRequestException(`Each entry for ${question.key} must be 1-40 characters`);
+          }
+        } else {
+          const allowed = question.options?.map((o) => o.value) ?? [];
+          if (value.some((v) => !allowed.includes(v))) {
+            throw new BadRequestException(`Invalid selection for ${question.key}`);
+          }
         }
         if (question.maxSelections && value.length > question.maxSelections) {
           throw new BadRequestException(`Select at most ${question.maxSelections} for ${question.key}`);

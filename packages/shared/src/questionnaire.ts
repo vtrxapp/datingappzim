@@ -30,6 +30,10 @@ export interface QuestionDefinition {
   max?: number;
   /** Max selectable options for MULTI_SELECT (deal-breakers/values). */
   maxSelections?: number;
+  /** MULTI_SELECT only: besides picking from `options`, the user can also type
+   * their own free-text entries (e.g. HOBBIES) — validation only checks
+   * shape/length, not membership in `options`, which become suggestions. */
+  allowCustomValues?: boolean;
   /** Whether the matching engine reads this answer when scoring candidates. */
   usedInScoring: boolean;
 }
@@ -148,10 +152,13 @@ export const QUESTIONNAIRE: QuestionDefinition[] = [
     order: 8,
     type: 'MULTI_SELECT',
     prompt: 'What do you enjoy doing?',
-    helperText: "Shown on your profile. You can skip this now, but you'll need at least one before you can respond to matches.",
+    helperText:
+      "Type your own — specific is better than generic, it gives people something to open a chat with. " +
+      "You can skip this now, but you'll need at least one before you can respond to matches.",
     required: false,
     options: HOBBY_OPTIONS,
     maxSelections: 5,
+    allowCustomValues: true,
     usedInScoring: true,
   },
 ];

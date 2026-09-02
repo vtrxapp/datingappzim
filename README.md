@@ -10,12 +10,16 @@ over 3G.
 
 1. Phone number + OTP signup (no email-first flow)
 2. A ~8-question onboarding questionnaire (core values + hobbies) plus an
-   optional add-a-photo step, completable in well under 90 seconds. Seeing
-   your first daily batch is **never gated** on any of this — but responding
-   to a match (Interested or Pass) requires at least one photo and one
-   hobby, so profile completion happens once someone has real matches in
-   front of them, not before. Anything skipped at signup can be added later
-   from Settings.
+   optional add-a-photo step, completable in well under 90 seconds. Hobbies
+   are free text, up to 5 — a curated list is offered as quick-tap
+   suggestions, but typing your own is the primary path, since a specific
+   hobby is a better conversation opener than a generic one. Seeing your
+   first daily batch is **never gated** on any of this — but responding to
+   a match (Interested or Pass) requires at least one photo and one hobby,
+   so profile completion happens once someone has real matches in front of
+   them, not before. Anything skipped at signup can be added later from
+   Settings (which also shows your display name centered under your
+   photos).
 3. Rule-based (no ML) daily match batches, scored on city, mutual age
    compatibility, shared core values, shared hobbies, and verification status
 4. Profile view: up to 6 photos (server-compressed to <100KB each), bio,
@@ -141,7 +145,10 @@ a retry).
 unit-tested, and has no ML in it: it scores mutual-preference-eligible
 candidates on same-city match, age proximity, shared questionnaire "core
 values", shared hobbies (a lighter-weight signal than core values, since
-hobbies are optional), and verification status. Same-city is heavily weighted but is
+hobbies are optional), and verification status. Hobbies are free text (see
+below), so the overlap check compares case/whitespace-insensitively rather
+than requiring an exact match — deliberately no fuzzier than that ("Soccer"
+won't match "Football"), consistent with no ML in the MVP. Same-city is heavily weighted but is
 **not** a hard filter — with a small early user base, hard-filtering by
 city could easily return zero candidates, so scoring naturally prefers
 same-city matches and falls back to other cities only when that's all
@@ -162,6 +169,17 @@ onboarding. `GET /profiles/me/readiness` lets the frontend show this
 proactively instead of waiting for a rejected request; the Settings page's
 photo uploader and Hobbies editor are how someone satisfies it after the
 fact if they skipped both during onboarding.
+
+**Hobbies are free text, not a fixed enum.** `QuestionDefinition.allowCustomValues`
+(`packages/shared/src/questionnaire.ts`) marks HOBBIES as accepting any
+1-40 character string, not just its `HOBBY_OPTIONS` list — those options
+are offered as tap-to-add suggestions, but typing your own is the primary
+path (`apps/web/src/components/HobbiesInput.tsx`, shared by onboarding and
+Settings). This was a deliberate product call: a generic pick from a list
+is a weaker conversation opener than something specific someone typed
+themselves. `QuestionnaireService.validateAnswer`'s `MULTI_SELECT` branch
+checks shape/length instead of list membership whenever a question sets
+this flag.
 
 **Storage.** Photo/ID uploads are always re-compressed server-side via
 `sharp` (resize to a max 1080px edge, then step JPEG quality down until

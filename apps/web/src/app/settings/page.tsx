@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HOBBY_OPTIONS, SubscriptionStateDto } from 'shared';
+import { SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
+import { HobbiesInput } from '@/components/HobbiesInput';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
@@ -16,6 +17,7 @@ interface ProfilePhoto {
   position: number;
 }
 interface MyProfile {
+  displayName: string;
   bio: string | null;
   photos: ProfilePhoto[];
   verificationStatus: 'UNVERIFIED' | 'PENDING' | 'VERIFIED' | 'REJECTED';
@@ -71,16 +73,6 @@ function SettingsContent() {
     } catch (err) {
       setMessage(err instanceof ApiError ? err.message : 'Could not save your bio.');
     }
-  }
-
-  function toggleHobby(value: string) {
-    setHobbies((current) =>
-      current.includes(value)
-        ? current.filter((h) => h !== value)
-        : current.length < 5
-          ? [...current, value]
-          : current,
-    );
   }
 
   async function saveHobbies() {
@@ -178,6 +170,7 @@ function SettingsContent() {
             e.target.value = '';
           }}
         />
+        <p className="mt-3 text-center text-lg font-bold text-brand-700">{profile.displayName}</p>
       </section>
 
       <section>
@@ -197,23 +190,8 @@ function SettingsContent() {
 
       <section>
         <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Hobbies</h2>
-        <p className="mb-2 text-sm text-gray-500">Pick up to 5 — you'll need at least one to respond to matches.</p>
-        <div className="flex flex-wrap gap-2">
-          {HOBBY_OPTIONS.map((opt) => {
-            const selected = hobbies.includes(opt.value);
-            return (
-              <button
-                key={opt.value}
-                onClick={() => toggleHobby(opt.value)}
-                className={`rounded-full border px-3 py-1.5 text-sm ${
-                  selected ? 'border-brand-500 bg-brand-50 font-semibold text-brand-700' : 'border-gray-300 text-gray-600'
-                }`}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+        <p className="mb-2 text-sm text-gray-500">You'll need at least one to respond to matches.</p>
+        <HobbiesInput value={hobbies} onChange={setHobbies} />
         <button onClick={saveHobbies} className="mt-3 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
           Save hobbies
         </button>

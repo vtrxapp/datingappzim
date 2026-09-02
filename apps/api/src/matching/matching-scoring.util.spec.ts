@@ -47,6 +47,12 @@ describe('scoreCandidate', () => {
     expect(oneValue).toBeGreaterThan(oneHobby);
   });
 
+  it('matches free-text hobbies regardless of case or surrounding whitespace', () => {
+    const noOverlap = scoreCandidate({ ...base, myHobbies: ['Restoring old radios'], candidateHobbies: ['Gaming'] });
+    const overlap = scoreCandidate({ ...base, myHobbies: ['Restoring old radios'], candidateHobbies: [' restoring OLD radios '] });
+    expect(overlap).toBeGreaterThan(noOverlap);
+  });
+
   it('rewards verified candidates', () => {
     const unverified = scoreCandidate(base);
     const verified = scoreCandidate({ ...base, candidateVerificationStatus: VerificationStatus.VERIFIED });
