@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { MatchUserStatus, PLAN_CONFIG, SubscriptionPlanId, SubscriptionStatus } from 'shared';
 import { PrismaService } from '../prisma/prisma.service';
+import { ProfilesService } from '../profiles/profiles.service';
 import { computeAge, toProfileSummaryDto } from '../profiles/profile-summary.util';
 import { startOfTodayUtc } from '../common/date.util';
 import { canonicalPair, scoreCandidate } from './matching-scoring.util';
@@ -9,7 +10,10 @@ const CANDIDATE_POOL_CAP = 500;
 
 @Injectable()
 export class MatchingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly profilesService: ProfilesService,
+  ) {}
 
   async getDailyBatch(userId: string) {
     const myProfile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -30,6 +34,11 @@ export class MatchingService {
   }
 
   async expressInterest(userId: string, matchId: string, interested: boolean) {
+    // Applies to both "Interested" and "Pass" — the product wants a completed
+    // profile (photo + hobbies) before someone can act on matches at all,
+    // even though seeing the daily batch itself is never gated.
+    await this.profilesService.assertReadyToExpressInterest(userId);
+
     const match = await this.prisma.match.findUnique({ where: { id: matchId } });
     if (!match) {
       throw new NotFoundException('Match not found');
@@ -145,13 +154,19 @@ export class MatchingService {
     }
 
     const responsesByUser = await this.prisma.questionnaireResponse.findMany({
-      where: { userId: { in: [userId, ...candidates.map((c) => c.userId)] }, questionKey: 'CORE_VALUES' },
+      where: {
+        userId: { in: [userId, ...candidates.map((c) => c.userId)] },
+        questionKey: { in: ['CORE_VALUES', 'HOBBIES'] },
+      },
     });
     const coreValuesByUser = new Map<string, string[]>();
+    const hobbiesByUser = new Map<string, string[]>();
     for (const r of responsesByUser) {
-      coreValuesByUser.set(r.userId, (r.answerValue as string[]) ?? []);
+      const target = r.questionKey === 'CORE_VALUES' ? coreValuesByUser : hobbiesByUser;
+      target.set(r.userId, (r.answerValue as string[]) ?? []);
     }
     const myCoreValues = coreValuesByUser.get(userId) ?? [];
+    const myHobbies = hobbiesByUser.get(userId) ?? [];
 
     const scored = candidates
       .map((candidate) => ({
@@ -160,9 +175,11 @@ export class MatchingService {
           myCity: myProfile.city,
           myAge,
           myCoreValues,
+          myHobbies,
           candidateCity: candidate.city,
           candidateAge: computeAge(candidate.dateOfBirth),
           candidateCoreValues: coreValuesByUser.get(candidate.userId) ?? [],
+          candidateHobbies: hobbiesByUser.get(candidate.userId) ?? [],
           candidateVerificationStatus: candidate.verificationStatus,
         }),
       }))

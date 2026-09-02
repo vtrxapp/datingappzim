@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SubscriptionStateDto } from 'shared';
+import { HOBBY_OPTIONS, SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { api, ApiError } from '@/lib/api-client';
@@ -23,6 +23,10 @@ interface MyProfile {
 interface BlockRow {
   blockedId: string;
 }
+interface QuestionnaireResponseRow {
+  questionKey: string;
+  answerValue: unknown;
+}
 
 export default function SettingsPage() {
   return (
@@ -38,6 +42,7 @@ function SettingsContent() {
   const router = useRouter();
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [bio, setBio] = useState('');
+  const [hobbies, setHobbies] = useState<string[]>([]);
   const [subscription, setSubscription] = useState<SubscriptionStateDto | null>(null);
   const [blocks, setBlocks] = useState<BlockRow[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -48,6 +53,10 @@ function SettingsContent() {
     api.get<MyProfile>('/profiles/me').then((p) => {
       setProfile(p);
       setBio(p.bio ?? '');
+    });
+    api.get<QuestionnaireResponseRow[]>('/questionnaire/me').then((rows) => {
+      const hobbiesRow = rows.find((r) => r.questionKey === 'HOBBIES');
+      setHobbies(Array.isArray(hobbiesRow?.answerValue) ? (hobbiesRow.answerValue as string[]) : []);
     });
     api.get<SubscriptionStateDto>('/subscriptions/me').then(setSubscription);
     api.get<BlockRow[]>('/blocks').then(setBlocks);
@@ -61,6 +70,25 @@ function SettingsContent() {
       setMessage('Bio saved.');
     } catch (err) {
       setMessage(err instanceof ApiError ? err.message : 'Could not save your bio.');
+    }
+  }
+
+  function toggleHobby(value: string) {
+    setHobbies((current) =>
+      current.includes(value)
+        ? current.filter((h) => h !== value)
+        : current.length < 5
+          ? [...current, value]
+          : current,
+    );
+  }
+
+  async function saveHobbies() {
+    try {
+      await api.post('/questionnaire/hobbies', { hobbies });
+      setMessage('Hobbies saved.');
+    } catch (err) {
+      setMessage(err instanceof ApiError ? err.message : 'Could not save your hobbies.');
     }
   }
 
@@ -164,6 +192,30 @@ function SettingsContent() {
         />
         <button onClick={saveBio} className="mt-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
           Save bio
+        </button>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Hobbies</h2>
+        <p className="mb-2 text-sm text-gray-500">Pick up to 5 — you'll need at least one to respond to matches.</p>
+        <div className="flex flex-wrap gap-2">
+          {HOBBY_OPTIONS.map((opt) => {
+            const selected = hobbies.includes(opt.value);
+            return (
+              <button
+                key={opt.value}
+                onClick={() => toggleHobby(opt.value)}
+                className={`rounded-full border px-3 py-1.5 text-sm ${
+                  selected ? 'border-brand-500 bg-brand-50 font-semibold text-brand-700' : 'border-gray-300 text-gray-600'
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+        <button onClick={saveHobbies} className="mt-3 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
+          Save hobbies
         </button>
       </section>
 

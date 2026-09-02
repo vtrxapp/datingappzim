@@ -20,6 +20,20 @@ export class QuestionnaireService {
     return this.prisma.questionnaireResponse.findMany({ where: { userId } });
   }
 
+  /** Lets someone add/edit hobbies after onboarding — e.g. if they skipped it
+   * initially and now need it to respond to matches. */
+  async updateHobbies(userId: string, hobbies: string[]): Promise<{ ok: true }> {
+    const question = QUESTIONNAIRE.find((q) => q.key === 'HOBBIES')!;
+    this.validateAnswer(question, hobbies);
+
+    await this.prisma.questionnaireResponse.upsert({
+      where: { userId_questionKey: { userId, questionKey: 'HOBBIES' } },
+      update: { answerValue: hobbies },
+      create: { userId, questionKey: 'HOBBIES', answerValue: hobbies },
+    });
+    return { ok: true };
+  }
+
   async submit(userId: string, dto: SubmitQuestionnaireDto) {
     for (const question of QUESTIONNAIRE) {
       this.validateAnswer(question, dto.answers[question.key]);
@@ -32,8 +46,15 @@ export class QuestionnaireService {
 
     const ageRange = dto.answers.SEEKING_AGE_RANGE as { min: number; max: number };
 
+    // Optional questions (currently just HOBBIES) can be left unanswered — skip persisting
+    // those rather than writing an empty/undefined value into the required Json column.
+    const answeredQuestions = QUESTIONNAIRE.filter((question) => {
+      const value = dto.answers[question.key];
+      return !(value === undefined || value === null || value === '');
+    });
+
     await this.prisma.$transaction(
-      QUESTIONNAIRE.map((question) =>
+      answeredQuestions.map((question) =>
         this.prisma.questionnaireResponse.upsert({
           where: { userId_questionKey: { userId, questionKey: question.key } },
           update: { answerValue: dto.answers[question.key] as object },

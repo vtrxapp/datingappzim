@@ -79,4 +79,11 @@ export interface MeDto {
   onboardingComplete: boolean;
 }
 
+/** Whether a user has enough of a profile (photo + hobbies) to act on matches. */
+export interface ProfileReadinessDto {
+  hasPhoto: boolean;
+  hasHobbies: boolean;
+  ready: boolean;
+}
+
 export { Gender };

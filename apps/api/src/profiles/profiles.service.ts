@@ -80,6 +80,35 @@ export class ProfilesService {
     });
   }
 
+  /**
+   * At least one photo and one hobby are required before a user can act on a
+   * match (Interested or Pass) — a deliberate product decision to nudge
+   * profile completion once someone has already seen real matches, without
+   * gating onboarding itself (they still see their first batch immediately).
+   */
+  async getMatchingReadiness(userId: string): Promise<{ hasPhoto: boolean; hasHobbies: boolean; ready: boolean }> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId }, include: { photos: true } });
+    const hasPhoto = (profile?.photos.length ?? 0) > 0;
+
+    const hobbiesResponse = await this.prisma.questionnaireResponse.findUnique({
+      where: { userId_questionKey: { userId, questionKey: 'HOBBIES' } },
+    });
+    const hobbies = (hobbiesResponse?.answerValue as string[] | undefined) ?? [];
+    const hasHobbies = hobbies.length > 0;
+
+    return { hasPhoto, hasHobbies, ready: hasPhoto && hasHobbies };
+  }
+
+  async assertReadyToExpressInterest(userId: string): Promise<void> {
+    const readiness = await this.getMatchingReadiness(userId);
+    if (!readiness.hasPhoto) {
+      throw new BadRequestException('Add a profile photo before responding to matches');
+    }
+    if (!readiness.hasHobbies) {
+      throw new BadRequestException('Add at least one hobby before responding to matches');
+    }
+  }
+
   async getProfileSummaryForViewer(targetUserId: string) {
     const profile = await this.prisma.profile.findUnique({
       where: { userId: targetUserId },

@@ -29,6 +29,11 @@ export class ProfilesController {
     return this.profilesService.findByUserId(user.id);
   }
 
+  @Get('me/readiness')
+  getMatchingReadiness(@CurrentUser() user: RequestUser) {
+    return this.profilesService.getMatchingReadiness(user.id);
+  }
+
   @Get(':userId')
   getProfile(@Param('userId') userId: string) {
     return this.profilesService.getProfileSummaryForViewer(userId);

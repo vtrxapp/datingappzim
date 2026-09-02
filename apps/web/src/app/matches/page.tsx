@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MatchCandidateDto } from 'shared';
+import { MatchCandidateDto, ProfileReadinessDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { api, ApiError } from '@/lib/api-client';
@@ -19,6 +19,7 @@ export default function MatchesPage() {
 
 function MatchesContent() {
   const [matches, setMatches] = useState<MatchCandidateDto[] | null>(null);
+  const [readiness, setReadiness] = useState<ProfileReadinessDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [actingOn, setActingOn] = useState<string | null>(null);
 
@@ -27,6 +28,7 @@ function MatchesContent() {
       .get<MatchCandidateDto[]>('/matching/daily-batch')
       .then(setMatches)
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Could not load your matches.'));
+    api.get<ProfileReadinessDto>('/profiles/me/readiness').then(setReadiness);
   }, []);
 
   async function respond(matchId: string, interested: boolean) {
@@ -34,8 +36,8 @@ function MatchesContent() {
     try {
       const updated = await api.post<MatchCandidateDto>(`/matching/${matchId}/interest`, { interested });
       setMatches((prev) => (prev ? prev.map((m) => (m.matchId === matchId ? updated : m)) : prev));
-    } catch {
-      setError('Could not save your response. Try again.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not save your response. Try again.');
     } finally {
       setActingOn(null);
     }
@@ -51,6 +53,21 @@ function MatchesContent() {
       </div>
 
       {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+
+      {readiness && !readiness.ready && (
+        <Link
+          href="/settings"
+          className="mb-4 block rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm text-brand-700"
+        >
+          <span className="font-semibold">Complete your profile to respond to matches.</span>{' '}
+          Add {!readiness.hasPhoto && !readiness.hasHobbies
+            ? 'a photo and a hobby'
+            : !readiness.hasPhoto
+              ? 'a photo'
+              : 'a hobby'}{' '}
+          in Settings →
+        </Link>
+      )}
 
       {matches === null && <p className="text-sm text-gray-500">Loading…</p>}
       {matches?.length === 0 && (
@@ -93,6 +110,13 @@ function MatchesContent() {
               <div className="border-t border-brand-100 p-3 text-center text-sm font-semibold text-green-700">
                 It's a match! Say hello in Chat.
               </div>
+            ) : match.myStatus === 'PENDING' && readiness && !readiness.ready ? (
+              <Link
+                href="/settings"
+                className="block border-t border-brand-100 p-3 text-center text-sm font-semibold text-brand-600"
+              >
+                Complete your profile to respond →
+              </Link>
             ) : match.myStatus === 'PENDING' ? (
               <div className="flex gap-2 border-t border-brand-100 p-3">
                 <button

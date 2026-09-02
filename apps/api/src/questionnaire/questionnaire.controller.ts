@@ -4,6 +4,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { RequestUser } from '../common/types/authenticated-request';
 import { QuestionnaireService } from './questionnaire.service';
 import { SubmitQuestionnaireDto } from './dto/submit-questionnaire.dto';
+import { UpdateHobbiesDto } from './dto/update-hobbies.dto';
 
 @Controller('questionnaire')
 @UseGuards(JwtAuthGuard)
@@ -18,5 +19,10 @@ export class QuestionnaireController {
   @Post('submit')
   submit(@CurrentUser() user: RequestUser, @Body() dto: SubmitQuestionnaireDto) {
     return this.questionnaireService.submit(user.id, dto);
+  }
+
+  @Post('hobbies')
+  updateHobbies(@CurrentUser() user: RequestUser, @Body() dto: UpdateHobbiesDto) {
+    return this.questionnaireService.updateHobbies(user.id, dto.hobbies);
   }
 }

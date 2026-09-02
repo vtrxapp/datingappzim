@@ -6,9 +6,11 @@ describe('scoreCandidate', () => {
     myCity: City.HARARE,
     myAge: 30,
     myCoreValues: ['FAITH_CENTERED', 'FAMILY_ORIENTED'],
+    myHobbies: ['HIKING', 'READING'],
     candidateCity: City.HARARE,
     candidateAge: 30,
     candidateCoreValues: ['FAITH_CENTERED', 'FAMILY_ORIENTED'],
+    candidateHobbies: ['HIKING', 'READING'],
     candidateVerificationStatus: VerificationStatus.UNVERIFIED,
   };
 
@@ -33,6 +35,16 @@ describe('scoreCandidate', () => {
     const noOverlap = scoreCandidate({ ...base, candidateCoreValues: ['CAREER_DRIVEN'] });
     const fullOverlap = scoreCandidate(base);
     expect(fullOverlap).toBeGreaterThan(noOverlap);
+  });
+
+  it('rewards shared hobbies, but less than shared core values', () => {
+    const noOverlap = scoreCandidate({ ...base, candidateHobbies: ['GAMING'] });
+    const fullOverlap = scoreCandidate(base);
+    expect(fullOverlap).toBeGreaterThan(noOverlap);
+
+    const oneHobby = scoreCandidate({ ...base, candidateCoreValues: [], candidateHobbies: ['HIKING'] });
+    const oneValue = scoreCandidate({ ...base, candidateCoreValues: ['FAITH_CENTERED'], candidateHobbies: [] });
+    expect(oneValue).toBeGreaterThan(oneHobby);
   });
 
   it('rewards verified candidates', () => {

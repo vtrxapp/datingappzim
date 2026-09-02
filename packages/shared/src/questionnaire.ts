@@ -3,7 +3,12 @@
  * renders this config to build the wizard; the backend validates submitted
  * answers against it and uses `usedInScoring` fields for rule-based matching.
  *
- * Kept to 7 questions so the flow is completable well under 90 seconds.
+ * Kept short (5-8 questions, per the product brief) so the flow is
+ * completable well under 90 seconds. HOBBIES is marked `required: false`
+ * here so it never blocks *onboarding* — but a profile photo and at least
+ * one hobby are required before a user can act on a match (Interested or
+ * Pass); see ProfilesService.assertReadyToExpressInterest in the backend.
+ * Someone who skips this step can add hobbies later from Settings.
  */
 export type QuestionType = 'SINGLE_SELECT' | 'MULTI_SELECT' | 'RANGE' | 'TEXT';
 
@@ -40,6 +45,25 @@ export const CORE_VALUE_OPTIONS: QuestionOption[] = [
   { value: 'NON_DRINKER', label: 'Non-drinker' },
   { value: 'RURAL_ROOTS', label: 'Values rural/home area roots' },
   { value: 'URBAN_LIFESTYLE', label: 'Prefers urban lifestyle' },
+];
+
+export const HOBBY_OPTIONS: QuestionOption[] = [
+  { value: 'FOOTBALL', label: 'Football' },
+  { value: 'NETBALL', label: 'Netball' },
+  { value: 'HIKING', label: 'Hiking' },
+  { value: 'RUNNING', label: 'Running' },
+  { value: 'GYM_FITNESS', label: 'Gym & fitness' },
+  { value: 'MUSIC_CHOIR', label: 'Music / choir' },
+  { value: 'BRAAI_COOKING', label: 'Braais & cooking' },
+  { value: 'GARDENING', label: 'Gardening' },
+  { value: 'READING', label: 'Reading' },
+  { value: 'TRAVELING', label: 'Traveling' },
+  { value: 'DANCING', label: 'Dancing' },
+  { value: 'GAMING', label: 'Gaming' },
+  { value: 'FASHION', label: 'Fashion' },
+  { value: 'CARS', label: 'Cars' },
+  { value: 'PHOTOGRAPHY', label: 'Photography' },
+  { value: 'VOLUNTEERING', label: 'Volunteering / community work' },
 ];
 
 export const QUESTIONNAIRE: QuestionDefinition[] = [
@@ -117,6 +141,17 @@ export const QUESTIONNAIRE: QuestionDefinition[] = [
     required: true,
     options: CORE_VALUE_OPTIONS,
     maxSelections: 3,
+    usedInScoring: true,
+  },
+  {
+    key: 'HOBBIES',
+    order: 8,
+    type: 'MULTI_SELECT',
+    prompt: 'What do you enjoy doing?',
+    helperText: "Shown on your profile. You can skip this now, but you'll need at least one before you can respond to matches.",
+    required: false,
+    options: HOBBY_OPTIONS,
+    maxSelections: 5,
     usedInScoring: true,
   },
 ];

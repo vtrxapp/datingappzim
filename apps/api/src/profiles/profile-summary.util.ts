@@ -12,7 +12,7 @@ export function computeAge(dateOfBirth: Date): number {
   return age;
 }
 
-const ABOUT_KEYS = ['RELATIONSHIP_INTENT', 'CORE_VALUES'];
+const ABOUT_KEYS = ['RELATIONSHIP_INTENT', 'CORE_VALUES', 'HOBBIES'];
 
 export function toProfileSummaryDto(
   userId: string,

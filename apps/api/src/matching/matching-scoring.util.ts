@@ -5,9 +5,11 @@ export interface ScoringInput {
   myCity: City;
   myAge: number;
   myCoreValues: string[];
+  myHobbies: string[];
   candidateCity: City;
   candidateAge: number;
   candidateCoreValues: string[];
+  candidateHobbies: string[];
   candidateVerificationStatus: VerificationStatus;
 }
 
@@ -23,6 +25,9 @@ export function scoreCandidate(input: ScoringInput): number {
 
   const sharedValues = input.myCoreValues.filter((v) => input.candidateCoreValues.includes(v));
   score += sharedValues.length * MATCHING_CONFIG.pointsPerSharedCoreValue;
+
+  const sharedHobbies = input.myHobbies.filter((h) => input.candidateHobbies.includes(h));
+  score += sharedHobbies.length * MATCHING_CONFIG.pointsPerSharedHobby;
 
   if (input.candidateVerificationStatus === VerificationStatus.VERIFIED) {
     score += MATCHING_CONFIG.verifiedBonus;

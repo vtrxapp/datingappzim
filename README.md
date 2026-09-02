@@ -9,11 +9,15 @@ over 3G.
 ## Product scope (what's built)
 
 1. Phone number + OTP signup (no email-first flow)
-2. A ~7-question onboarding questionnaire, completable in well under 90
-   seconds, with **no gate** on further app access — you see your first
-   matches immediately after
+2. A ~8-question onboarding questionnaire (core values + hobbies) plus an
+   optional add-a-photo step, completable in well under 90 seconds. Seeing
+   your first daily batch is **never gated** on any of this — but responding
+   to a match (Interested or Pass) requires at least one photo and one
+   hobby, so profile completion happens once someone has real matches in
+   front of them, not before. Anything skipped at signup can be added later
+   from Settings.
 3. Rule-based (no ML) daily match batches, scored on city, mutual age
-   compatibility, shared core values, and verification status
+   compatibility, shared core values, shared hobbies, and verification status
 4. Profile view: up to 6 photos (server-compressed to <100KB each), bio,
    structured "About" answers, verification badge
 5. Chat that only unlocks after **mutual** interest — text + one image per
@@ -106,6 +110,11 @@ Admin access for local testing: set `ADMIN_BOOTSTRAP_PHONE` in
 granted the `ADMIN` role on first verify, unlocking `/admin` in the frontend
 (reports queue + verification queue).
 
+Any profile created before photo upload existed (or just created directly
+in the database for testing) can be given a placeholder avatar with:
+`cd apps/api && set -a && source .env && set +a && npx ts-node scripts/seed-avatars.ts`
+— see that file's header comment for what it actually generates.
+
 ## Architecture notes and decisions
 
 **Auth.** OTP codes are HMAC-hashed and stored in Redis with a TTL (not
@@ -131,7 +140,8 @@ a retry).
 **Matching.** `apps/api/src/matching/matching-scoring.util.ts` is pure,
 unit-tested, and has no ML in it: it scores mutual-preference-eligible
 candidates on same-city match, age proximity, shared questionnaire "core
-values", and verification status. Same-city is heavily weighted but is
+values", shared hobbies (a lighter-weight signal than core values, since
+hobbies are optional), and verification status. Same-city is heavily weighted but is
 **not** a hard filter — with a small early user base, hard-filtering by
 city could easily return zero candidates, so scoring naturally prefers
 same-city matches and falls back to other cities only when that's all
@@ -140,6 +150,18 @@ user per day) rather than via a cron job, which keeps the logic simple and
 always-correct; `userOneId`/`userTwoId` are stored in a canonical
 (lexicographically sorted) order so a pair can never produce two Match rows
 regardless of who was matched against whom.
+
+**Responding to matches requires a completed-enough profile.**
+`ProfilesService.assertReadyToExpressInterest` (called from
+`MatchingService.expressInterest`, so it's enforced server-side regardless
+of what the client does) requires at least one photo and one hobby before
+either "Interested" or "Pass" is accepted — a deliberate product decision to
+get people to finish their profile once they can see it has real value
+(actual matches in front of them), rather than front-loading it into
+onboarding. `GET /profiles/me/readiness` lets the frontend show this
+proactively instead of waiting for a rejected request; the Settings page's
+photo uploader and Hobbies editor are how someone satisfies it after the
+fact if they skipped both during onboarding.
 
 **Storage.** Photo/ID uploads are always re-compressed server-side via
 `sharp` (resize to a max 1080px edge, then step JPEG quality down until
