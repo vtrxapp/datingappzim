@@ -18,8 +18,8 @@ over 3G.
    a match (Interested or Pass) requires at least one photo and one hobby,
    so profile completion happens once someone has real matches in front of
    them, not before. Anything skipped at signup can be added later from
-   Settings (which also shows your display name centered under your
-   photos).
+   Settings, which also lets you edit your display name from its own
+   section there.
 3. Rule-based (no ML) daily match batches, scored on city, mutual age
    compatibility, shared core values, shared hobbies, and verification status
 4. Profile view: up to 6 photos (server-compressed to <100KB each), bio,

@@ -30,6 +30,9 @@ yarn-error.log*
 # Prisma
 apps/api/prisma/dev.db
 
+# Redis local dump (created by `redis-server --daemonize yes` in dev)
+dump.rdb
+
 # Local storage mock (uploaded photos in local dev)
 apps/api/.local-storage/
 

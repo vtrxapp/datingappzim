@@ -43,6 +43,7 @@ function SettingsContent() {
   const { me, logout } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<MyProfile | null>(null);
+  const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [hobbies, setHobbies] = useState<string[]>([]);
   const [subscription, setSubscription] = useState<SubscriptionStateDto | null>(null);
@@ -54,6 +55,7 @@ function SettingsContent() {
   function load() {
     api.get<MyProfile>('/profiles/me').then((p) => {
       setProfile(p);
+      setDisplayName(p.displayName);
       setBio(p.bio ?? '');
     });
     api.get<QuestionnaireResponseRow[]>('/questionnaire/me').then((rows) => {
@@ -65,6 +67,15 @@ function SettingsContent() {
   }
 
   useEffect(load, []);
+
+  async function saveDisplayName() {
+    try {
+      await api.post('/profiles/me/display-name', { displayName });
+      setMessage('Name saved.');
+    } catch (err) {
+      setMessage(err instanceof ApiError ? err.message : 'Could not save your name.');
+    }
+  }
 
   async function saveBio() {
     try {
@@ -170,7 +181,24 @@ function SettingsContent() {
             e.target.value = '';
           }}
         />
-        <p className="mt-3 text-center text-lg font-bold text-brand-700">{profile.displayName}</p>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Name</h2>
+        <input
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          maxLength={60}
+          placeholder="Your name"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-right"
+        />
+        <button
+          onClick={saveDisplayName}
+          className="mt-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Save name
+        </button>
       </section>
 
       <section>
