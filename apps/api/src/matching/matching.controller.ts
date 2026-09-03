@@ -25,6 +25,11 @@ export class MatchingController {
     return this.matchingService.listAdmirers(user.id);
   }
 
+  @Get(':matchId')
+  getMatch(@CurrentUser() user: RequestUser, @Param('matchId') matchId: string) {
+    return this.matchingService.getMatch(user.id, matchId);
+  }
+
   @Post(':matchId/interest')
   expressInterest(
     @CurrentUser() user: RequestUser,

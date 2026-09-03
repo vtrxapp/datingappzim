@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MessageDto } from 'shared';
+import { MatchCandidateDto, MessageDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
@@ -24,6 +24,7 @@ function ChatThreadContent() {
   const { me } = useAuth();
   const router = useRouter();
   const [messages, setMessages] = useState<MessageDto[] | null>(null);
+  const [match, setMatch] = useState<MatchCandidateDto | null>(null);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +44,10 @@ function ChatThreadContent() {
     const interval = setInterval(load, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchId]);
+
+  useEffect(() => {
+    api.get<MatchCandidateDto>(`/matching/${matchId}`).then(setMatch);
   }, [matchId]);
 
   useEffect(() => {
@@ -78,6 +83,16 @@ function ChatThreadContent() {
         <button onClick={() => router.push('/chat')} className="text-brand-600">
           ←
         </button>
+        {match && (
+          <Link href={`/profile/${match.profile.userId}`} className="flex items-center gap-2">
+            <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-brand-50">
+              {match.profile.photos[0] && (
+                <Image src={match.profile.photos[0]} alt="" fill className="object-cover" />
+              )}
+            </div>
+            <span className="font-semibold text-gray-900">{match.profile.displayName}</span>
+          </Link>
+        )}
         <Link href="/safety" className="ml-auto text-xs font-semibold text-brand-600 underline">
           Plan a safe meet-up
         </Link>

@@ -62,6 +62,15 @@ export class MatchingService {
     return this.toCandidateDto(userId, updated);
   }
 
+  /** A single match by id — e.g. so the chat thread header can show/link to who you're talking to. */
+  async getMatch(userId: string, matchId: string) {
+    const match = await this.prisma.match.findUnique({ where: { id: matchId } });
+    if (!match || (match.userOneId !== userId && match.userTwoId !== userId)) {
+      throw new NotFoundException('Match not found');
+    }
+    return this.toCandidateDto(userId, match);
+  }
+
   /** Mutual matches — these are the chat-eligible threads. */
   async listMyMutualMatches(userId: string) {
     const matches = await this.prisma.match.findMany({
