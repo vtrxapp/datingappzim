@@ -38,18 +38,6 @@ function AdmirersContent() {
 
       {data && data.count === 0 && <p className="text-sm text-gray-500">No one yet — check back soon!</p>}
 
-      {data && data.upgradeRequired && data.count > 0 && (
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-4 text-center">
-          <p className="mb-2 font-semibold text-brand-700">
-            {data.count} {data.count === 1 ? 'person is' : 'people are'} interested in you
-          </p>
-          <p className="mb-3 text-sm text-gray-600">Upgrade to Premium to see who right away.</p>
-          <Link href="/settings/premium" className="inline-block rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
-            Upgrade to Premium
-          </Link>
-        </div>
-      )}
-
       <div className="space-y-3">
         {data?.profiles.map((match) => (
           <Link
@@ -67,10 +55,23 @@ function AdmirersContent() {
                 {match.profile.displayName}, {match.profile.age}
               </p>
               <p className="text-sm text-gray-500">{match.profile.city}</p>
+              {match.theirNote && <p className="mt-0.5 text-sm italic text-brand-600">"{match.theirNote}"</p>}
             </div>
           </Link>
         ))}
       </div>
+
+      {data && data.upgradeRequired && (
+        <div className="mt-4 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-center">
+          <p className="mb-2 font-semibold text-brand-700">
+            {data.count - data.profiles.length} more {data.count - data.profiles.length === 1 ? 'person is' : 'people are'} interested in you
+          </p>
+          <p className="mb-3 text-sm text-gray-600">Upgrade to Premium to see everyone.</p>
+          <Link href="/settings/premium" className="inline-block rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
+            Upgrade to Premium
+          </Link>
+        </div>
+      )}
     </main>
   );
 }

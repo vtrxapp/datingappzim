@@ -31,9 +31,11 @@ over 3G.
    text and, if you don't check in on time, a follow-up alert
 7. Report/block on every profile and chat thread, routing to a minimal
    internal admin queue
-8. A single Premium tier (more daily introductions + see who's interested in
-   you first), paid via EcoCash through Paynow, behind a provider-agnostic
-   payment interface with a mock provider for local dev
+8. A single Premium tier — more daily introductions, seeing everyone who's
+   interested in you (Free sees your 5 most recent), and attaching a short
+   note to an Interested so they see it before they respond — paid via
+   EcoCash through Paynow, behind a provider-agnostic payment interface with
+   a mock provider for local dev
 
 **Scope decision made during this build:** matching is heterosexual-only for
 the MVP (a man seeking a woman / a woman seeking a man). This was decided
@@ -248,7 +250,8 @@ branding.
 
 ## Tuning pricing and quotas
 
-Plan pricing and daily-introduction quotas live in
-`packages/shared/src/plans.ts` — a config change, not a code change, and
-shared by both the backend (enforcement) and frontend (display) since it's
-in `packages/shared`.
+Plan pricing, daily-introduction quotas, how many admirers Free can see
+(`maxVisibleAdmirers`), and whether a plan can attach a note to Interested
+(`canSendInterestNote`) all live in `packages/shared/src/plans.ts` — a
+config change, not a code change, and shared by both the backend
+(enforcement) and frontend (display) since it's in `packages/shared`.

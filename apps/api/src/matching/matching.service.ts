@@ -33,7 +33,7 @@ export class MatchingService {
     return Promise.all(todayMatches.map((match) => this.toCandidateDto(userId, match)));
   }
 
-  async expressInterest(userId: string, matchId: string, interested: boolean) {
+  async expressInterest(userId: string, matchId: string, interested: boolean, note?: string) {
     // Applies to both "Interested" and "Pass" — the product wants a completed
     // profile (photo + hobbies) before someone can act on matches at all,
     // even though seeing the daily batch itself is never gated.
@@ -49,7 +49,14 @@ export class MatchingService {
 
     const myStatus = interested ? MatchUserStatus.INTERESTED : MatchUserStatus.PASSED;
     const isUserOne = match.userOneId === userId;
-    const data = isUserOne ? { userOneStatus: myStatus } : { userTwoStatus: myStatus };
+
+    // A note only ever makes sense alongside Interested, and is a Premium perk —
+    // silently drop it otherwise rather than erroring over a cosmetic extra.
+    const plan = await this.getPlan(userId);
+    const canAttachNote = interested && !!note?.trim() && PLAN_CONFIG[plan].canSendInterestNote;
+    const data = isUserOne
+      ? { userOneStatus: myStatus, ...(canAttachNote ? { userOneNote: note!.trim() } : {}) }
+      : { userTwoStatus: myStatus, ...(canAttachNote ? { userTwoNote: note!.trim() } : {}) };
 
     const otherStatus = isUserOne ? match.userTwoStatus : match.userOneStatus;
     const becomesMutual = myStatus === MatchUserStatus.INTERESTED && otherStatus === MatchUserStatus.INTERESTED;
@@ -80,7 +87,8 @@ export class MatchingService {
     return Promise.all(matches.map((match) => this.toCandidateDto(userId, match)));
   }
 
-  /** People who are interested in me but I haven't responded to yet — gated by plan for MVP monetization. */
+  /** People who are interested in me but I haven't responded to yet. Free sees the
+   * most recent few (see PLAN_CONFIG.maxVisibleAdmirers); Premium sees everyone. */
   async listAdmirers(userId: string) {
     const plan = await this.getPlan(userId);
     const matches = await this.prisma.match.findMany({
@@ -93,12 +101,11 @@ export class MatchingService {
       orderBy: { introducedAt: 'desc' },
     });
 
-    if (!PLAN_CONFIG[plan].canSeeWhoIsInterestedFirst) {
-      return { count: matches.length, profiles: [], upgradeRequired: true };
-    }
+    const limit = PLAN_CONFIG[plan].maxVisibleAdmirers;
+    const visibleMatches = limit === null ? matches : matches.slice(0, limit);
+    const profiles = await Promise.all(visibleMatches.map((match) => this.toCandidateDto(userId, match)));
 
-    const profiles = await Promise.all(matches.map((match) => this.toCandidateDto(userId, match)));
-    return { count: matches.length, profiles, upgradeRequired: false };
+    return { count: matches.length, profiles, upgradeRequired: limit !== null && matches.length > limit };
   }
 
   private async findTodaysMatches(userId: string) {
@@ -209,6 +216,8 @@ export class MatchingService {
     userTwoId: string;
     userOneStatus: MatchUserStatus;
     userTwoStatus: MatchUserStatus;
+    userOneNote: string | null;
+    userTwoNote: string | null;
     score: number;
     introducedAt: Date;
     mutualAt: Date | null;
@@ -217,6 +226,8 @@ export class MatchingService {
     const otherUserId = isUserOne ? match.userTwoId : match.userOneId;
     const myStatus = isUserOne ? match.userOneStatus : match.userTwoStatus;
     const theirStatus = isUserOne ? match.userTwoStatus : match.userOneStatus;
+    const myNote = isUserOne ? match.userOneNote : match.userTwoNote;
+    const theirNote = isUserOne ? match.userTwoNote : match.userOneNote;
 
     const otherProfile = await this.prisma.profile.findUniqueOrThrow({
       where: { userId: otherUserId },
@@ -232,6 +243,8 @@ export class MatchingService {
       theirStatus,
       isMutual: match.mutualAt !== null,
       introducedAt: match.introducedAt.toISOString(),
+      myNote,
+      theirNote,
     };
   }
 }

@@ -36,6 +36,6 @@ export class MatchingController {
     @Param('matchId') matchId: string,
     @Body() dto: ExpressInterestDto,
   ) {
-    return this.matchingService.expressInterest(user.id, matchId, dto.interested);
+    return this.matchingService.expressInterest(user.id, matchId, dto.interested, dto.note);
   }
 }

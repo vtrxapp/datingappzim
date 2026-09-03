@@ -8,6 +8,12 @@ import { api, ApiError } from '@/lib/api-client';
 
 const POLL_INTERVAL_MS = 2000;
 const premium = PLAN_CONFIG[SubscriptionPlanId.PREMIUM];
+const free = PLAN_CONFIG[SubscriptionPlanId.FREE];
+const PREMIUM_FEATURES = [
+  `${premium.dailyIntroductions} daily introductions, instead of ${free.dailyIntroductions}`,
+  `See everyone who's interested in you — Free only shows your most recent ${free.maxVisibleAdmirers}`,
+  'Add a personal note when you say Interested, so they see it before they respond',
+];
 
 interface InitiateResult {
   paymentTransactionId: string;
@@ -58,10 +64,15 @@ function PremiumUpgradeContent() {
       <div>
         <div className="text-4xl">⭐</div>
         <h1 className="mt-2 text-xl font-bold text-brand-700">Go Premium</h1>
-        <p className="mt-1 text-gray-600">
-          ${premium.priceUsd.toFixed(2)}/month for {premium.dailyIntroductions} daily introductions and seeing
-          who's interested in you first.
-        </p>
+        <p className="mt-1 text-gray-600">${premium.priceUsd.toFixed(2)}/month</p>
+        <ul className="mt-4 space-y-2 text-left">
+          {PREMIUM_FEATURES.map((feature) => (
+            <li key={feature} className="flex gap-2 text-sm text-gray-600">
+              <span className="text-green-600">✓</span>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {state === 'idle' && (

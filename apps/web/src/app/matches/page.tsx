@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MatchCandidateDto, ProfileReadinessDto } from 'shared';
+import { MatchCandidateDto, PLAN_CONFIG, ProfileReadinessDto, SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { api, ApiError } from '@/lib/api-client';
@@ -20,8 +20,13 @@ export default function MatchesPage() {
 function MatchesContent() {
   const [matches, setMatches] = useState<MatchCandidateDto[] | null>(null);
   const [readiness, setReadiness] = useState<ProfileReadinessDto | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionStateDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [actingOn, setActingOn] = useState<string | null>(null);
+  const [noteDraftMatchId, setNoteDraftMatchId] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState('');
+
+  const canSendInterestNote = subscription ? PLAN_CONFIG[subscription.plan].canSendInterestNote : false;
 
   useEffect(() => {
     api
@@ -29,17 +34,29 @@ function MatchesContent() {
       .then(setMatches)
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Could not load your matches.'));
     api.get<ProfileReadinessDto>('/profiles/me/readiness').then(setReadiness);
+    api.get<SubscriptionStateDto>('/subscriptions/me').then(setSubscription);
   }, []);
 
-  async function respond(matchId: string, interested: boolean) {
+  async function respond(matchId: string, interested: boolean, note?: string) {
     setActingOn(matchId);
     try {
-      const updated = await api.post<MatchCandidateDto>(`/matching/${matchId}/interest`, { interested });
+      const updated = await api.post<MatchCandidateDto>(`/matching/${matchId}/interest`, { interested, note });
       setMatches((prev) => (prev ? prev.map((m) => (m.matchId === matchId ? updated : m)) : prev));
+      setNoteDraftMatchId(null);
+      setNoteText('');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not save your response. Try again.');
     } finally {
       setActingOn(null);
+    }
+  }
+
+  function startInterested(matchId: string) {
+    if (canSendInterestNote) {
+      setNoteDraftMatchId(matchId);
+      setNoteText('');
+    } else {
+      respond(matchId, true);
     }
   }
 
@@ -117,6 +134,33 @@ function MatchesContent() {
               >
                 Complete your profile to respond →
               </Link>
+            ) : match.myStatus === 'PENDING' && noteDraftMatchId === match.matchId ? (
+              <div className="space-y-2 border-t border-brand-100 p-3">
+                <textarea
+                  autoFocus
+                  value={noteText}
+                  onChange={(e) => setNoteText(e.target.value)}
+                  maxLength={200}
+                  rows={2}
+                  placeholder={`Add a note for ${match.profile.displayName} (optional)`}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setNoteDraftMatchId(null)}
+                    className="flex-1 rounded-lg border border-gray-300 py-2 text-sm font-semibold text-gray-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => respond(match.matchId, true, noteText)}
+                    disabled={actingOn === match.matchId}
+                    className="flex-1 rounded-lg bg-brand-500 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  >
+                    Send Interested
+                  </button>
+                </div>
+              </div>
             ) : match.myStatus === 'PENDING' ? (
               <div className="flex gap-2 border-t border-brand-100 p-3">
                 <button
@@ -127,7 +171,7 @@ function MatchesContent() {
                   Pass
                 </button>
                 <button
-                  onClick={() => respond(match.matchId, true)}
+                  onClick={() => startInterested(match.matchId)}
                   disabled={actingOn === match.matchId}
                   className="flex-1 rounded-lg bg-brand-500 py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
@@ -137,6 +181,7 @@ function MatchesContent() {
             ) : (
               <div className="border-t border-brand-100 p-3 text-center text-sm text-gray-500">
                 {match.myStatus === 'INTERESTED' ? "You're interested — waiting on them" : 'You passed'}
+                {match.myNote && <p className="mt-1 italic text-gray-400">You said: "{match.myNote}"</p>}
               </div>
             )}
           </div>

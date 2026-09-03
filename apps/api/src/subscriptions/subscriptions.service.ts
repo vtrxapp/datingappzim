@@ -32,7 +32,6 @@ export class SubscriptionsService {
       status: subscription?.status ?? SubscriptionStatus.ACTIVE,
       expiresAt: subscription?.expiresAt?.toISOString() ?? null,
       dailyIntroductionsRemaining: Math.max(0, planConfig.dailyIntroductions - todaysMatchCount),
-      canSeeWhoIsInterestedFirst: planConfig.canSeeWhoIsInterestedFirst,
     };
   }
 

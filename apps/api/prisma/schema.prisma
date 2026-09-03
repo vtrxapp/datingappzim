@@ -186,6 +186,8 @@ model Match {
   userTwo       User            @relation("MatchUserTwo", fields: [userTwoId], references: [id])
   userOneStatus MatchUserStatus @default(PENDING)
   userTwoStatus MatchUserStatus @default(PENDING)
+  userOneNote   String?
+  userTwoNote   String?
   score         Float
   introducedAt  DateTime        @default(now())
   mutualAt      DateTime?

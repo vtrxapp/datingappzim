@@ -13,7 +13,10 @@ export interface PlanConfig {
   priceUsd: number;
   billingPeriodDays: number;
   dailyIntroductions: number;
-  canSeeWhoIsInterestedFirst: boolean;
+  /** How many of your admirers you can see, most-recent-first; null = everyone. */
+  maxVisibleAdmirers: number | null;
+  /** Whether you can attach a short note when saying Interested, before the other person responds. */
+  canSendInterestNote: boolean;
 }
 
 export const PLAN_CONFIG: Record<SubscriptionPlanId, PlanConfig> = {
@@ -23,7 +26,8 @@ export const PLAN_CONFIG: Record<SubscriptionPlanId, PlanConfig> = {
     priceUsd: 0,
     billingPeriodDays: 0,
     dailyIntroductions: 3,
-    canSeeWhoIsInterestedFirst: false,
+    maxVisibleAdmirers: 5,
+    canSendInterestNote: false,
   },
   [SubscriptionPlanId.PREMIUM]: {
     id: SubscriptionPlanId.PREMIUM,
@@ -31,7 +35,8 @@ export const PLAN_CONFIG: Record<SubscriptionPlanId, PlanConfig> = {
     priceUsd: 4.99,
     billingPeriodDays: 30,
     dailyIntroductions: 10,
-    canSeeWhoIsInterestedFirst: true,
+    maxVisibleAdmirers: null,
+    canSendInterestNote: true,
   },
 };
 
