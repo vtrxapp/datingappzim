@@ -65,7 +65,7 @@ export class SubscriptionsService {
     const result = await this.paymentProvider.initiate({
       reference: transaction.id,
       amountUsd: planConfig.priceUsd,
-      description: `${planConfig.label} subscription — DatingAppZim`,
+      description: `${planConfig.label} subscription — Tariro`,
       payerPhone: user.phone,
     });
 

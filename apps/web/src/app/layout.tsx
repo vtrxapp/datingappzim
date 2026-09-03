@@ -3,7 +3,7 @@ import { AuthProvider } from '@/lib/auth-context';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'DatingAppZim — Marriage-minded matches',
+  title: 'Tariro — Marriage-minded matches',
   description: 'Curated, safety-first matchmaking for Zimbabweans ready to settle down.',
   manifest: '/manifest.json',
 };

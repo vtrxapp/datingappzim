@@ -38,7 +38,7 @@ export class PaynowPaymentProvider implements PaymentProvider {
       additionalinfo: input.description,
       returnurl: this.configService.get<string>('payment.paynow.returnUrl')!,
       resulturl: this.configService.get<string>('payment.paynow.resultUrl')!,
-      authemail: `${input.payerPhone.replace('+', '')}@sms.datingappzim.local`,
+      authemail: `${input.payerPhone.replace('+', '')}@sms.tariro.local`,
       phone: input.payerPhone,
       method: 'ecocash',
       status: 'Message',

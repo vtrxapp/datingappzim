@@ -1,4 +1,4 @@
-# DatingAppZim — MVP
+# Tariro — MVP
 
 A marriage-intent-focused matchmaking platform for Zimbabwe (Harare/Bulawayo
 first). Deliberately **not** a swipe app: no infinite browse grid, no casual
