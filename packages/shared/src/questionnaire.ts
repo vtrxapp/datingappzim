@@ -1,14 +1,13 @@
 /**
- * Single source of truth for the onboarding questionnaire. The frontend
- * renders this config to build the wizard; the backend validates submitted
- * answers against it and uses `usedInScoring` fields for rule-based matching.
- *
- * Kept short (5-8 questions, per the product brief) so the flow is
- * completable well under 90 seconds. HOBBIES is marked `required: false`
- * here so it never blocks *onboarding* — but a profile photo and at least
- * one hobby are required before a user can act on a match (Interested or
- * Pass); see ProfilesService.assertReadyToExpressInterest in the backend.
- * Someone who skips this step can add hobbies later from Settings.
+ * Single source of truth for the profile questionnaire. The backend
+ * validates submitted answers against it and uses `usedInScoring` fields
+ * for rule-based matching; the frontend's onboarding wizard
+ * (apps/web/src/app/onboarding/page.tsx) renders every question here
+ * EXCEPT HOBBIES — that one is deliberately left out of onboarding (kept
+ * to signup-friction-free ~7 questions) and is only ever answered from
+ * Settings, alongside a profile photo. Both are required before a user can
+ * act on a match (Interested or Pass); see
+ * ProfilesService.assertReadyToExpressInterest in the backend.
  */
 export type QuestionType = 'SINGLE_SELECT' | 'MULTI_SELECT' | 'RANGE' | 'TEXT';
 

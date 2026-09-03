@@ -9,17 +9,18 @@ over 3G.
 ## Product scope (what's built)
 
 1. Phone number + OTP signup (no email-first flow)
-2. A ~8-question onboarding questionnaire (core values + hobbies) plus an
-   optional add-a-photo step, completable in well under 90 seconds. Hobbies
-   are free text, up to 5 — a curated list is offered as quick-tap
-   suggestions, but typing your own is the primary path, since a specific
-   hobby is a better conversation opener than a generic one. Seeing your
-   first daily batch is **never gated** on any of this — but responding to
-   a match (Interested or Pass) requires at least one photo and one hobby,
-   so profile completion happens once someone has real matches in front of
-   them, not before. Anything skipped at signup can be added later from
-   Settings, which also lets you edit your display name from its own
-   section there.
+2. A 7-question onboarding questionnaire (name, gender, seeking, city, age
+   range, date of birth, core values), completable in well under 60 seconds —
+   deliberately **no photo or hobbies step**, to keep signup as short as
+   possible. Seeing your first daily batch is **never gated** on either of
+   those — but responding to a match (Interested or Pass) requires at least
+   one photo and one hobby, so a "complete your profile to respond" banner on
+   Matches nudges you to Settings for both right after you land there, rather
+   than front-loading them into signup. Hobbies are free text, up to 5 — a
+   curated list is offered as quick-tap suggestions, but typing your own is
+   the primary path, since a specific hobby is a better conversation opener
+   than a generic one. Settings also lets you edit your display name from its
+   own section there.
 3. Rule-based (no ML) daily match batches, scored on city, mutual age
    compatibility, shared core values, shared hobbies, and verification status
 4. Profile view: up to 6 photos (server-compressed to <100KB each), bio,
@@ -165,10 +166,11 @@ of what the client does) requires at least one photo and one hobby before
 either "Interested" or "Pass" is accepted — a deliberate product decision to
 get people to finish their profile once they can see it has real value
 (actual matches in front of them), rather than front-loading it into
-onboarding. `GET /profiles/me/readiness` lets the frontend show this
-proactively instead of waiting for a rejected request; the Settings page's
-photo uploader and Hobbies editor are how someone satisfies it after the
-fact if they skipped both during onboarding.
+onboarding — which is why neither is asked during onboarding at all.
+`GET /profiles/me/readiness` lets the frontend show this proactively
+instead of waiting for a rejected request (the "complete your profile to
+respond" banner on Matches); the Settings page's photo uploader and
+Hobbies editor are how someone satisfies it afterwards.
 
 **Hobbies are free text, not a fixed enum.** `QuestionDefinition.allowCustomValues`
 (`packages/shared/src/questionnaire.ts`) marks HOBBIES as accepting any
