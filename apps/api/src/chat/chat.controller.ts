@@ -30,7 +30,7 @@ export class ChatController {
 
   @Post(':matchId/messages')
   sendText(@CurrentUser() user: RequestUser, @Param('matchId') matchId: string, @Body() dto: SendMessageDto) {
-    return this.chatService.sendTextMessage(user.id, matchId, dto.content);
+    return this.chatService.sendTextMessage(user.id, matchId, dto.content, dto.replyToId);
   }
 
   @Post(':matchId/messages/image')
@@ -39,10 +39,11 @@ export class ChatController {
     @CurrentUser() user: RequestUser,
     @Param('matchId') matchId: string,
     @UploadedFile() file?: Express.Multer.File,
+    @Body('replyToId') replyToId?: string,
   ) {
     if (!file) {
       throw new BadRequestException('image file is required');
     }
-    return this.chatService.sendImageMessage(user.id, matchId, file.buffer);
+    return this.chatService.sendImageMessage(user.id, matchId, file.buffer, replyToId);
   }
 }

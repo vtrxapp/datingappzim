@@ -214,6 +214,10 @@ model Message {
   createdAt DateTime  @default(now())
   readAt    DateTime?
 
+  replyToId String?
+  replyTo   Message?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies   Message[] @relation("MessageReplies")
+
   @@index([matchId, createdAt])
 }
 

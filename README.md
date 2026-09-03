@@ -26,7 +26,9 @@ over 3G.
 4. Profile view: up to 6 photos (server-compressed to <100KB each), bio,
    structured "About" answers, verification badge
 5. Chat that only unlocks after **mutual** interest — text + one image per
-   message, phone numbers never exposed in-app
+   message, phone numbers never exposed in-app. Swipe right on any message
+   (like WhatsApp/Messenger) to reply to it specifically; the reply carries
+   a quoted preview of the original
 6. Safety check-ins: pick a safety contact (no account needed) who gets a
    text and, if you don't check in on time, a follow-up alert
 7. Report/block on every profile and chat thread, routing to a minimal

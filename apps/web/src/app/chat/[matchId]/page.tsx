@@ -10,6 +10,8 @@ import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
 const POLL_INTERVAL_MS = 5000;
+const SWIPE_REPLY_THRESHOLD = 60;
+const SWIPE_REPLY_MAX = 84;
 
 export default function ChatThreadPage() {
   return (
@@ -26,9 +28,11 @@ function ChatThreadContent() {
   const [messages, setMessages] = useState<MessageDto[] | null>(null);
   const [match, setMatch] = useState<MatchCandidateDto | null>(null);
   const [draft, setDraft] = useState('');
+  const [replyTarget, setReplyTarget] = useState<MessageDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const draftInputRef = useRef<HTMLInputElement>(null);
 
   async function load() {
     try {
@@ -57,9 +61,11 @@ function ChatThreadContent() {
   async function sendText() {
     if (!draft.trim()) return;
     const text = draft.trim();
+    const replyToId = replyTarget?.id;
     setDraft('');
+    setReplyTarget(null);
     try {
-      await api.post(`/chat/${matchId}/messages`, { content: text });
+      await api.post(`/chat/${matchId}/messages`, { content: text, replyToId });
       load();
     } catch {
       setError('Could not send that message.');
@@ -69,12 +75,19 @@ function ChatThreadContent() {
   async function sendImage(file: File) {
     const formData = new FormData();
     formData.append('image', file);
+    if (replyTarget) formData.append('replyToId', replyTarget.id);
+    setReplyTarget(null);
     try {
       await api.postForm(`/chat/${matchId}/messages/image`, formData);
       load();
     } catch {
       setError('Could not send that photo.');
     }
+  }
+
+  function startReply(message: MessageDto) {
+    setReplyTarget(message);
+    draftInputRef.current?.focus();
   }
 
   return (
@@ -100,30 +113,25 @@ function ChatThreadContent() {
 
       <div className="flex-1 space-y-2 overflow-y-auto p-3">
         {messages === null && <p className="text-sm text-gray-500">Loading…</p>}
-        {messages?.map((m) => {
-          const isMine = m.senderId === me?.userId;
-          return (
-            <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                  isMine ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-800'
-                }`}
-              >
-                {m.imageUrl ? (
-                  <div className="relative h-48 w-40 overflow-hidden rounded-lg">
-                    <Image src={m.imageUrl} alt="Shared photo" fill className="object-cover" />
-                  </div>
-                ) : (
-                  <p>{m.content}</p>
-                )}
-              </div>
-            </div>
-          );
-        })}
+        {messages?.map((m) => (
+          <MessageBubble key={m.id} message={m} isMine={m.senderId === me?.userId} onReply={startReply} />
+        ))}
         <div ref={bottomRef} />
       </div>
 
       {error && <p className="px-3 text-sm text-red-600">{error}</p>}
+
+      {replyTarget && (
+        <div className="flex items-center gap-2 border-t border-brand-100 bg-brand-50 px-3 py-2">
+          <div className="flex-1 truncate border-l-2 border-brand-400 pl-2 text-sm text-gray-600">
+            Replying to {replyTarget.senderId === me?.userId ? 'yourself' : match?.profile.displayName ?? 'them'}:{' '}
+            {replyTarget.imageUrl ? '📷 Photo' : replyTarget.content}
+          </div>
+          <button onClick={() => setReplyTarget(null)} className="text-gray-400" aria-label="Cancel reply">
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="flex items-center gap-2 border-t border-brand-100 p-3">
         <input
@@ -141,6 +149,7 @@ function ChatThreadContent() {
           📷
         </button>
         <input
+          ref={draftInputRef}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendText()}
@@ -150,6 +159,89 @@ function ChatThreadContent() {
         <button onClick={sendText} className="font-semibold text-brand-600">
           Send
         </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Swipe right past a threshold to reply — the same gesture as WhatsApp/Messenger.
+ * Tracked with pointer events (not touch-only) so it works with mouse drag too.
+ */
+function MessageBubble({
+  message,
+  isMine,
+  onReply,
+}: {
+  message: MessageDto;
+  isMine: boolean;
+  onReply: (message: MessageDto) => void;
+}) {
+  const [dragX, setDragX] = useState(0);
+  const dragRef = useRef<{ startX: number; startY: number; horizontal: boolean } | null>(null);
+
+  function onPointerDown(e: React.PointerEvent) {
+    dragRef.current = { startX: e.clientX, startY: e.clientY, horizontal: false };
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    if (!drag.horizontal && Math.abs(dx) > 8) {
+      drag.horizontal = Math.abs(dx) > Math.abs(dy);
+    }
+    if (!drag.horizontal) return;
+    setDragX(Math.max(0, Math.min(dx, SWIPE_REPLY_MAX)));
+  }
+
+  function endDrag() {
+    if (dragRef.current?.horizontal && dragX >= SWIPE_REPLY_THRESHOLD) {
+      onReply(message);
+    }
+    dragRef.current = null;
+    setDragX(0);
+  }
+
+  return (
+    <div className={`flex items-center gap-2 ${isMine ? 'justify-end' : 'justify-start'}`}>
+      <span
+        className="text-lg text-brand-500 transition-opacity"
+        style={{ opacity: Math.min(dragX / SWIPE_REPLY_THRESHOLD, 1) }}
+      >
+        ↩
+      </span>
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        style={{
+          transform: `translateX(${dragX}px)`,
+          transition: dragX === 0 ? 'transform 0.2s ease' : 'none',
+          touchAction: 'pan-y',
+        }}
+        className={`max-w-[75%] select-none rounded-2xl px-3 py-2 text-sm ${
+          isMine ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-800'
+        }`}
+      >
+        {message.replyTo && (
+          <div
+            className={`mb-1 rounded border-l-2 px-2 py-1 text-xs ${
+              isMine ? 'border-white/60 bg-white/10 text-white/90' : 'border-brand-300 bg-white/70 text-gray-600'
+            }`}
+          >
+            {message.replyTo.imageUrl ? '📷 Photo' : message.replyTo.content}
+          </div>
+        )}
+        {message.imageUrl ? (
+          <div className="relative h-48 w-40 overflow-hidden rounded-lg">
+            <Image src={message.imageUrl} alt="Shared photo" fill className="object-cover" />
+          </div>
+        ) : (
+          <p>{message.content}</p>
+        )}
       </div>
     </div>
   );

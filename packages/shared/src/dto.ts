@@ -35,6 +35,13 @@ export interface MatchCandidateDto {
   theirNote: string | null;
 }
 
+export interface MessageReplyPreviewDto {
+  id: string;
+  senderId: string;
+  content: string | null;
+  imageUrl: string | null;
+}
+
 export interface MessageDto {
   id: string;
   matchId: string;
@@ -43,6 +50,8 @@ export interface MessageDto {
   imageUrl: string | null;
   createdAt: string;
   readAt: string | null;
+  /** The message this one is a swipe-to-reply response to, if any. */
+  replyTo: MessageReplyPreviewDto | null;
 }
 
 export interface SafetyCheckinDto {
