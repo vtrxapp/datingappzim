@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { MatchCandidateDto, PLAN_CONFIG, ProfileReadinessDto, SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
+import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 
 export default function MatchesPage() {
@@ -82,7 +83,7 @@ function MatchesContent() {
             : !readiness.hasPhoto
               ? 'a photo'
               : 'a hobby'}{' '}
-          in Settings →
+          in Settings <Icon name="chevronRight" size={13} />
         </Link>
       )}
 
@@ -107,11 +108,13 @@ function MatchesContent() {
                     className="object-cover"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-4xl">🙂</div>
+                  <div className="flex h-full items-center justify-center text-brand-300">
+                    <Icon name="person" size={40} />
+                  </div>
                 )}
                 {match.profile.verificationStatus === 'VERIFIED' && (
-                  <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-brand-600">
-                    ✓ Verified
+                  <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-brand-600">
+                    <Icon name="check" size={11} /> Verified
                   </span>
                 )}
               </div>
@@ -130,9 +133,9 @@ function MatchesContent() {
             ) : match.myStatus === 'PENDING' && readiness && !readiness.ready ? (
               <Link
                 href="/settings"
-                className="block border-t border-brand-100 p-3 text-center text-sm font-semibold text-brand-600"
+                className="flex items-center justify-center gap-1 border-t border-brand-100 p-3 text-center text-sm font-semibold text-brand-600"
               >
-                Complete your profile to respond →
+                Complete your profile to respond <Icon name="chevronRight" size={13} />
               </Link>
             ) : match.myStatus === 'PENDING' && noteDraftMatchId === match.matchId ? (
               <div className="space-y-2 border-t border-brand-100 p-3">

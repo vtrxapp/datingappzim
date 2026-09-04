@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { HOBBY_OPTIONS } from 'shared';
+import { Icon } from './Icon';
 
 const MAX_HOBBIES = 5;
 const MAX_HOBBY_LENGTH = 40;
@@ -37,7 +38,7 @@ export function HobbiesInput({ value, onChange }: { value: string[]; onChange: (
             >
               {h}
               <button type="button" onClick={() => removeHobby(h)} aria-label={`Remove ${h}`} className="text-brand-400">
-                ✕
+                <Icon name="close" size={12} />
               </button>
             </span>
           ))}

@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Icon, IconName } from './Icon';
 
-const TABS = [
-  { href: '/matches', label: 'Matches', icon: '💛' },
-  { href: '/chat', label: 'Chat', icon: '💬' },
-  { href: '/safety', label: 'Safety', icon: '🛡️' },
-  { href: '/settings', label: 'Settings', icon: '⚙️' },
+const TABS: { href: string; label: string; icon: IconName }[] = [
+  { href: '/matches', label: 'Matches', icon: 'heart' },
+  { href: '/chat', label: 'Chat', icon: 'chat' },
+  { href: '/safety', label: 'Safety', icon: 'shield' },
+  { href: '/settings', label: 'Settings', icon: 'settings' },
 ];
 
 export function BottomNav() {
@@ -25,9 +26,7 @@ export function BottomNav() {
               active ? 'text-brand-600 font-semibold' : 'text-gray-500'
             }`}
           >
-            <span aria-hidden className="text-lg leading-none">
-              {tab.icon}
-            </span>
+            <Icon name={tab.icon} size={20} />
             {tab.label}
           </Link>
         );

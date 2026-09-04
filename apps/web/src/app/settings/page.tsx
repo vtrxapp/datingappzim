@@ -8,6 +8,7 @@ import { SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { HobbiesInput } from '@/components/HobbiesInput';
+import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
@@ -155,9 +156,9 @@ function SettingsContent() {
                 <Image src={p.url} alt="" fill className="object-cover" />
                 <button
                   onClick={() => removePhoto(p.id)}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 px-1.5 text-xs text-white"
+                  className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
                 >
-                  ✕
+                  <Icon name="close" size={12} />
                 </button>
               </div>
             ))}
@@ -228,7 +229,10 @@ function SettingsContent() {
       <section>
         <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Verification</h2>
         {profile.verificationStatus === 'VERIFIED' ? (
-          <p className="text-sm text-green-700">✓ Your profile is verified.</p>
+          <p className="flex items-center gap-1.5 text-sm text-green-700">
+            <Icon name="check" size={15} />
+            Your profile is verified.
+          </p>
         ) : profile.verificationStatus === 'PENDING' ? (
           <p className="text-sm text-gray-500">Your ID is under review.</p>
         ) : (

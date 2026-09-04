@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MatchCandidateDto, MessageDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
+import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
@@ -94,7 +95,7 @@ function ChatThreadContent() {
     <div className="flex flex-1 flex-col">
       <div className="flex items-center gap-2 border-b border-brand-100 p-3">
         <button onClick={() => router.push('/chat')} className="text-brand-600">
-          ←
+          <Icon name="chevronLeft" size={20} />
         </button>
         {match && (
           <Link href={`/profile/${match.profile.userId}`} className="flex items-center gap-2">
@@ -125,10 +126,16 @@ function ChatThreadContent() {
         <div className="flex items-center gap-2 border-t border-brand-100 bg-brand-50 px-3 py-2">
           <div className="flex-1 truncate border-l-2 border-brand-400 pl-2 text-sm text-gray-600">
             Replying to {replyTarget.senderId === me?.userId ? 'yourself' : match?.profile.displayName ?? 'them'}:{' '}
-            {replyTarget.imageUrl ? '📷 Photo' : replyTarget.content}
+            {replyTarget.imageUrl ? (
+              <span className="inline-flex items-center gap-1">
+                <Icon name="camera" size={13} /> Photo
+              </span>
+            ) : (
+              replyTarget.content
+            )}
           </div>
           <button onClick={() => setReplyTarget(null)} className="text-gray-400" aria-label="Cancel reply">
-            ✕
+            <Icon name="close" size={16} />
           </button>
         </div>
       )}
@@ -145,8 +152,8 @@ function ChatThreadContent() {
             e.target.value = '';
           }}
         />
-        <button onClick={() => fileInputRef.current?.click()} className="text-xl" aria-label="Send a photo">
-          📷
+        <button onClick={() => fileInputRef.current?.click()} className="text-gray-600" aria-label="Send a photo">
+          <Icon name="camera" size={22} />
         </button>
         <input
           ref={draftInputRef}
@@ -207,10 +214,10 @@ function MessageBubble({
   return (
     <div className={`flex items-center gap-2 ${isMine ? 'justify-end' : 'justify-start'}`}>
       <span
-        className="text-lg text-brand-500 transition-opacity"
+        className="text-brand-500 transition-opacity"
         style={{ opacity: Math.min(dragX / SWIPE_REPLY_THRESHOLD, 1) }}
       >
-        ↩
+        <Icon name="reply" size={20} />
       </span>
       <div
         onPointerDown={onPointerDown}
@@ -232,7 +239,13 @@ function MessageBubble({
               isMine ? 'border-white/60 bg-white/10 text-white/90' : 'border-brand-300 bg-white/70 text-gray-600'
             }`}
           >
-            {message.replyTo.imageUrl ? '📷 Photo' : message.replyTo.content}
+            {message.replyTo.imageUrl ? (
+              <span className="inline-flex items-center gap-1">
+                <Icon name="camera" size={12} /> Photo
+              </span>
+            ) : (
+              message.replyTo.content
+            )}
           </div>
         )}
         {message.imageUrl ? (

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ProfileSummaryDto, ReportReason } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
+import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
@@ -72,8 +73,8 @@ function ProfileContent() {
 
   return (
     <main className="flex-1 pb-8">
-      <button onClick={() => router.back()} className="p-4 text-sm text-brand-600">
-        ← Back
+      <button onClick={() => router.back()} className="flex items-center gap-1 p-4 text-sm text-brand-600">
+        <Icon name="chevronLeft" size={16} /> Back
       </button>
 
       <div className="space-y-2 px-4">
@@ -86,7 +87,9 @@ function ProfileContent() {
             ))}
           </div>
         ) : (
-          <div className="flex aspect-square items-center justify-center rounded-xl bg-brand-50 text-5xl">🙂</div>
+          <div className="flex aspect-square items-center justify-center rounded-xl bg-brand-50 text-brand-300">
+            <Icon name="person" size={48} />
+          </div>
         )}
       </div>
 
@@ -98,8 +101,8 @@ function ProfileContent() {
           <p className="text-gray-500">
             {profile.city}
             {profile.verificationStatus === 'VERIFIED' && (
-              <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-xs font-semibold text-brand-700">
-                ✓ Verified
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-0.5 text-xs font-semibold text-brand-700">
+                <Icon name="check" size={11} /> Verified
               </span>
             )}
           </p>

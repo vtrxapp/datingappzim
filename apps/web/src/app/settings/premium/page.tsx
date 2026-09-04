@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PLAN_CONFIG, SubscriptionPlanId } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
+import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 
 const POLL_INTERVAL_MS = 2000;
@@ -62,13 +63,17 @@ function PremiumUpgradeContent() {
   return (
     <main className="flex flex-1 flex-col justify-center gap-6 p-6 text-center">
       <div>
-        <div className="text-4xl">⭐</div>
+        <div className="flex justify-center text-brand-500">
+          <Icon name="star" size={40} />
+        </div>
         <h1 className="mt-2 text-xl font-bold text-brand-700">Go Premium</h1>
         <p className="mt-1 text-gray-600">${premium.priceUsd.toFixed(2)}/month</p>
         <ul className="mt-4 space-y-2 text-left">
           {PREMIUM_FEATURES.map((feature) => (
             <li key={feature} className="flex gap-2 text-sm text-gray-600">
-              <span className="text-green-600">✓</span>
+              <span className="text-green-600">
+                <Icon name="check" size={16} />
+              </span>
               <span>{feature}</span>
             </li>
           ))}
@@ -90,7 +95,9 @@ function PremiumUpgradeContent() {
 
       {state === 'paid' && (
         <div className="space-y-3">
-          <p className="font-semibold text-green-700">You're Premium! 🎉</p>
+          <p className="flex items-center justify-center gap-1.5 font-semibold text-green-700">
+            You're Premium! <Icon name="sparkle" size={16} />
+          </p>
           <button onClick={() => router.replace('/settings')} className="rounded-xl bg-brand-500 py-3 font-semibold text-white">
             Back to settings
           </button>
