@@ -101,7 +101,7 @@ function MatchesContent() {
               <div className="relative aspect-[4/3] w-full bg-brand-50">
                 <PhotoCarousel photos={match.profile.photos} alt={match.profile.displayName} />
                 {match.profile.verificationStatus === 'VERIFIED' && (
-                  <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-brand-600">
+                  <span className="absolute right-2 top-6 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-brand-600">
                     <Icon name="check" size={11} /> Verified
                   </span>
                 )}
