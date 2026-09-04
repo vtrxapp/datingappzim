@@ -33,6 +33,23 @@ export interface MatchCandidateDto {
   myNote: string | null;
   /** The note they sent alongside their Interested, if any. */
   theirNote: string | null;
+  /** Last time the other person was seen active, for an Online/last-seen indicator. */
+  theirLastActiveAt: string | null;
+}
+
+/** One row in the Chats list: a mutual match plus its most recent message and unread count. */
+export interface ConversationSummaryDto {
+  matchId: string;
+  profile: ProfileSummaryDto;
+  theirLastActiveAt: string | null;
+  lastMessage: {
+    senderId: string;
+    content: string | null;
+    imageUrl: string | null;
+    createdAt: string;
+  } | null;
+  /** Messages from them I haven't opened the thread to see yet. */
+  unreadCount: number;
 }
 
 export interface MessageReplyPreviewDto {

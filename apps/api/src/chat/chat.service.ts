@@ -1,7 +1,8 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { MessageDto } from 'shared';
+import { ConversationSummaryDto, MessageDto } from 'shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { MatchingService } from '../matching/matching.service';
 
 function toMessageDto(message: {
   id: string;
@@ -37,7 +38,42 @@ export class ChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storageService: StorageService,
+    private readonly matchingService: MatchingService,
   ) {}
+
+  /** The Chats list: every mutual match with its most recent message and unread count,
+   * most recently active conversation first. */
+  async listConversations(userId: string): Promise<ConversationSummaryDto[]> {
+    const matches = await this.matchingService.listMyMutualMatches(userId);
+
+    const withSortKey = await Promise.all(
+      matches.map(async (match) => {
+        const [lastMessage, unreadCount] = await Promise.all([
+          this.prisma.message.findFirst({ where: { matchId: match.matchId }, orderBy: { createdAt: 'desc' } }),
+          this.prisma.message.count({ where: { matchId: match.matchId, senderId: { not: userId }, readAt: null } }),
+        ]);
+
+        const conversation: ConversationSummaryDto = {
+          matchId: match.matchId,
+          profile: match.profile,
+          theirLastActiveAt: match.theirLastActiveAt,
+          lastMessage: lastMessage
+            ? {
+                senderId: lastMessage.senderId,
+                content: lastMessage.content,
+                imageUrl: lastMessage.imageUrl,
+                createdAt: lastMessage.createdAt.toISOString(),
+              }
+            : null,
+          unreadCount,
+        };
+        const sortKey = lastMessage?.createdAt.getTime() ?? new Date(match.introducedAt).getTime();
+        return { conversation, sortKey };
+      }),
+    );
+
+    return withSortKey.sort((a, b) => b.sortKey - a.sortKey).map((x) => x.conversation);
+  }
 
   private async assertCanChat(userId: string, matchId: string) {
     const match = await this.prisma.match.findUnique({ where: { id: matchId } });

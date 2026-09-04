@@ -8,6 +8,7 @@ import { MatchCandidateDto, MessageDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { Icon } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
+import { formatLastActive, formatMessageTime } from '@/lib/time';
 import { useAuth } from '@/lib/auth-context';
 
 const POLL_INTERVAL_MS = 5000;
@@ -104,7 +105,12 @@ function ChatThreadContent() {
                 <Image src={match.profile.photos[0]} alt="" fill className="object-cover" />
               )}
             </div>
-            <span className="font-semibold text-gray-900">{match.profile.displayName}</span>
+            <span className="flex flex-col leading-tight">
+              <span className="font-semibold text-gray-900">{match.profile.displayName}</span>
+              {formatLastActive(match.theirLastActiveAt) && (
+                <span className="text-xs text-gray-400">{formatLastActive(match.theirLastActiveAt)}</span>
+              )}
+            </span>
           </Link>
         )}
         <Link href="/safety" className="ml-auto text-xs font-semibold text-brand-600 underline">
@@ -255,6 +261,12 @@ function MessageBubble({
         ) : (
           <p>{message.content}</p>
         )}
+        <div className={`mt-1 flex items-center justify-end gap-1 text-[11px] ${isMine ? 'text-white/70' : 'text-gray-400'}`}>
+          <span>{formatMessageTime(message.createdAt)}</span>
+          {isMine && (
+            <Icon name={message.readAt ? 'checkDouble' : 'check'} size={13} className={message.readAt ? 'text-white' : 'text-white/60'} />
+          )}
+        </div>
       </div>
     </div>
   );

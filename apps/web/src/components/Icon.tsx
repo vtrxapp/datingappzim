@@ -1,5 +1,6 @@
 export type IconName =
   | 'check'
+  | 'checkDouble'
   | 'close'
   | 'camera'
   | 'heart'
@@ -16,6 +17,12 @@ export type IconName =
 
 const PATHS: Record<IconName, React.ReactNode> = {
   check: <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  checkDouble: (
+    <>
+      <path d="M1 13l4 4L14 8" stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
   close: <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />,
   camera: (
     <>

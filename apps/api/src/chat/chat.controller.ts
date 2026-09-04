@@ -23,6 +23,11 @@ const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @Get('conversations')
+  listConversations(@CurrentUser() user: RequestUser) {
+    return this.chatService.listConversations(user.id);
+  }
+
   @Get(':matchId/messages')
   listMessages(@CurrentUser() user: RequestUser, @Param('matchId') matchId: string) {
     return this.chatService.listMessages(user.id, matchId);

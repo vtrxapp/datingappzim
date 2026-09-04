@@ -229,11 +229,14 @@ export class MatchingService {
     const myNote = isUserOne ? match.userOneNote : match.userTwoNote;
     const theirNote = isUserOne ? match.userTwoNote : match.userOneNote;
 
-    const otherProfile = await this.prisma.profile.findUniqueOrThrow({
-      where: { userId: otherUserId },
-      include: { photos: true },
-    });
-    const otherResponses = await this.prisma.questionnaireResponse.findMany({ where: { userId: otherUserId } });
+    const [otherProfile, otherResponses, otherUser] = await Promise.all([
+      this.prisma.profile.findUniqueOrThrow({
+        where: { userId: otherUserId },
+        include: { photos: true },
+      }),
+      this.prisma.questionnaireResponse.findMany({ where: { userId: otherUserId } }),
+      this.prisma.user.findUniqueOrThrow({ where: { id: otherUserId }, select: { lastActiveAt: true } }),
+    ]);
 
     return {
       matchId: match.id,
@@ -245,6 +248,7 @@ export class MatchingService {
       introducedAt: match.introducedAt.toISOString(),
       myNote,
       theirNote,
+      theirLastActiveAt: otherUser.lastActiveAt?.toISOString() ?? null,
     };
   }
 }
