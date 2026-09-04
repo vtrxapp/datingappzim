@@ -17,6 +17,10 @@ interface ProfilePhoto {
   url: string;
   position: number;
 }
+interface PendingPhoto {
+  file: File;
+  previewUrl: string;
+}
 interface MyProfile {
   displayName: string;
   bio: string | null;
@@ -50,8 +54,14 @@ function SettingsContent() {
   const [subscription, setSubscription] = useState<SubscriptionStateDto | null>(null);
   const [blocks, setBlocks] = useState<BlockRow[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [pendingPhotos, setPendingPhotos] = useState<PendingPhoto[]>([]);
+  const [removedPhotoIds, setRemovedPhotoIds] = useState<string[]>([]);
+  const [savingPhotos, setSavingPhotos] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const idInputRef = useRef<HTMLInputElement>(null);
+
+  const visiblePhotos = profile?.photos.filter((p) => !removedPhotoIds.includes(p.id)).sort((a, b) => a.position - b.position) ?? [];
+  const photoDraftCount = visiblePhotos.length + pendingPhotos.length;
 
   function load() {
     api.get<MyProfile>('/profiles/me').then((p) => {
@@ -96,20 +106,34 @@ function SettingsContent() {
     }
   }
 
-  async function uploadPhoto(file: File) {
-    const formData = new FormData();
-    formData.append('photo', file);
-    try {
-      await api.postForm('/profiles/me/photos', formData);
-      load();
-    } catch (err) {
-      setMessage(err instanceof ApiError ? err.message : 'Could not upload that photo.');
-    }
+  function removePendingPhoto(index: number) {
+    setPendingPhotos((prev) => {
+      URL.revokeObjectURL(prev[index].previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
   }
 
-  async function removePhoto(photoId: string) {
-    await api.delete(`/profiles/me/photos/${photoId}`);
-    load();
+  async function savePhotos() {
+    setSavingPhotos(true);
+    try {
+      for (const id of removedPhotoIds) {
+        await api.delete(`/profiles/me/photos/${id}`);
+      }
+      for (const pending of pendingPhotos) {
+        const formData = new FormData();
+        formData.append('photo', pending.file);
+        await api.postForm('/profiles/me/photos', formData);
+      }
+      setMessage('Photos saved.');
+    } catch (err) {
+      setMessage(err instanceof ApiError ? err.message : 'Could not save all your photos. Please try again.');
+    } finally {
+      pendingPhotos.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+      setPendingPhotos([]);
+      setRemovedPhotoIds([]);
+      setSavingPhotos(false);
+      load();
+    }
   }
 
   async function uploadVerification(file: File) {
@@ -147,25 +171,40 @@ function SettingsContent() {
       {message && <p className="text-sm text-brand-600">{message}</p>}
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Photos ({profile.photos.length}/6)</h2>
+        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Photos ({photoDraftCount}/6)</h2>
         <div className="grid grid-cols-3 gap-2">
-          {profile.photos
-            .sort((a, b) => a.position - b.position)
-            .map((p) => (
-              <div key={p.id} className="relative aspect-square overflow-hidden rounded-lg bg-brand-50">
-                <Image src={p.url} alt="" fill className="object-cover" />
-                <button
-                  onClick={() => removePhoto(p.id)}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white"
-                >
-                  <Icon name="close" size={12} />
-                </button>
-              </div>
-            ))}
-          {profile.photos.length < 6 && (
+          {visiblePhotos.map((p) => (
+            <div key={p.id} className="relative aspect-square overflow-hidden rounded-lg bg-brand-50">
+              <Image src={p.url} alt="" fill className="object-cover" />
+              <button
+                onClick={() => setRemovedPhotoIds((prev) => [...prev, p.id])}
+                disabled={savingPhotos}
+                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white disabled:opacity-50"
+              >
+                <Icon name="close" size={12} />
+              </button>
+            </div>
+          ))}
+          {pendingPhotos.map((p, idx) => (
+            <div key={p.previewUrl} className="relative aspect-square overflow-hidden rounded-lg bg-brand-50">
+              <img src={p.previewUrl} alt="" className="h-full w-full object-cover" />
+              <button
+                onClick={() => removePendingPhoto(idx)}
+                disabled={savingPhotos}
+                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white disabled:opacity-50"
+              >
+                <Icon name="close" size={12} />
+              </button>
+              <span className="absolute bottom-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                New
+              </span>
+            </div>
+          ))}
+          {photoDraftCount < 6 && (
             <button
               onClick={() => photoInputRef.current?.click()}
-              className="flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-2xl text-gray-400"
+              disabled={savingPhotos}
+              className="flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-2xl text-gray-400 disabled:opacity-50"
             >
               +
             </button>
@@ -178,10 +217,17 @@ function SettingsContent() {
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) uploadPhoto(file);
+            if (file) setPendingPhotos((prev) => [...prev, { file, previewUrl: URL.createObjectURL(file) }]);
             e.target.value = '';
           }}
         />
+        <button
+          onClick={savePhotos}
+          disabled={savingPhotos || (pendingPhotos.length === 0 && removedPhotoIds.length === 0)}
+          className="mt-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+        >
+          {savingPhotos ? 'Saving…' : 'Save photos'}
+        </button>
       </section>
 
       <section>
