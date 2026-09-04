@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MatchCandidateDto, PLAN_CONFIG, ProfileReadinessDto, SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { Icon } from '@/components/Icon';
+import { PhotoCarousel } from '@/components/PhotoCarousel';
 import { api, ApiError } from '@/lib/api-client';
 
 export default function MatchesPage() {
@@ -99,19 +99,7 @@ function MatchesContent() {
           <div key={match.matchId} className="overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm">
             <Link href={`/profile/${match.profile.userId}`} className="block">
               <div className="relative aspect-[4/3] w-full bg-brand-50">
-                {match.profile.photos[0] ? (
-                  <Image
-                    src={match.profile.photos[0]}
-                    alt={match.profile.displayName}
-                    fill
-                    sizes="480px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-brand-300">
-                    <Icon name="person" size={40} />
-                  </div>
-                )}
+                <PhotoCarousel photos={match.profile.photos} alt={match.profile.displayName} />
                 {match.profile.verificationStatus === 'VERIFIED' && (
                   <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-brand-600">
                     <Icon name="check" size={11} /> Verified

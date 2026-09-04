@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { ProfileSummaryDto, ReportReason } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { Icon } from '@/components/Icon';
+import { PhotoCarousel } from '@/components/PhotoCarousel';
 import { api, ApiError } from '@/lib/api-client';
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
@@ -77,20 +77,10 @@ function ProfileContent() {
         <Icon name="chevronLeft" size={16} /> Back
       </button>
 
-      <div className="space-y-2 px-4">
-        {profile.photos.length > 0 ? (
-          <div className="grid grid-cols-2 gap-2">
-            {profile.photos.map((url, i) => (
-              <div key={url} className="relative aspect-square overflow-hidden rounded-xl bg-brand-50">
-                <Image src={url} alt={`${profile.displayName} photo ${i + 1}`} fill sizes="240px" className="object-cover" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex aspect-square items-center justify-center rounded-xl bg-brand-50 text-brand-300">
-            <Icon name="person" size={48} />
-          </div>
-        )}
+      <div className="px-4">
+        <div className="relative aspect-square overflow-hidden rounded-xl bg-brand-50">
+          <PhotoCarousel photos={profile.photos} alt={profile.displayName} />
+        </div>
       </div>
 
       <div className="space-y-3 p-4">
