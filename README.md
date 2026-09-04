@@ -223,8 +223,24 @@ gender.
 
 **PWA.** `@ducanh2912/next-pwa` generates the service worker and caches
 static assets; it's disabled in dev (`next dev`) and only active in a
-production build. Icons in `apps/web/public` are placeholders pending real
-branding.
+production build.
+
+**Branding.** The mark is two overlapping circles (teal `#2B6157`, coral
+`#E8674F`) with the overlap rendered in gold (`#D9A441`) via an SVG
+`clipPath`; the wordmark is the plain lowercase word "tariro" set in
+Fraunces 600 — no logo-in-text tricks. `apps/web/src/components/Logo.tsx`
+renders it inline as SVG rather than exported image files, so it stays
+crisp and re-themeable via two props: `variant` (`icon` / `lockup` /
+`stacked`) and `theme` (`light` / `dark` — a lighter tint set for placing
+the mark on a dark surface, not app-wide dark mode). Fraunces itself loads
+once in `layout.tsx` via `next/font/google`, exposed as the
+`--font-fraunces` CSS variable the component reads. `favicon.ico`,
+`icon.svg`, `apple-icon.png`, and the manifest's `icon-192` / `icon-512` /
+`icon-512-maskable` were all rasterized from that same source SVG via
+`sharp`; the maskable icon scales the mark to ~65% centered on the `paper`
+background (`#F5F1EC`) so Android's mask shapes don't clip it, rather than
+reusing one unpadded icon for both `any` and `maskable` purposes like the
+previous placeholder set did.
 
 ## What's genuinely not production-ready yet
 
