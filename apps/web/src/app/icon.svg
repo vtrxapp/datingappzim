@@ -1,0 +1,6 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="100" r="55" fill="#2B6157"/>
+<circle cx="120" cy="100" r="55" fill="#E8674F"/>
+<clipPath id="lens"><circle cx="80" cy="100" r="55"/></clipPath>
+<circle cx="120" cy="100" r="55" fill="#D9A441" clip-path="url(#lens)"/>
+</svg>

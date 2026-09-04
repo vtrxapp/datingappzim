@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { Logo } from '@/components/Logo';
 
 export default function HomePage() {
   const { me, loading } = useAuth();
@@ -25,8 +26,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col justify-between p-6">
       <div className="mt-16 space-y-4 text-center">
-        <div className="text-5xl">💍</div>
-        <h1 className="text-2xl font-bold text-brand-700">Tariro</h1>
+        <Logo variant="stacked" size={64} />
         <p className="text-gray-600">
           Curated introductions for Zimbabweans ready to settle down. No swiping, no games — just a few
           thoughtful matches a day, and safety built in from the start.
