@@ -34,7 +34,7 @@ export class MatchingService {
   }
 
   async expressInterest(userId: string, matchId: string, interested: boolean, note?: string) {
-    // Applies to both "Interested" and "Pass" — the product wants a completed
+    // Applies to both "Interested" and "Pass". The product wants a completed
     // profile (photo + hobbies) before someone can act on matches at all,
     // even though seeing the daily batch itself is never gated.
     await this.profilesService.assertReadyToExpressInterest(userId);
@@ -50,8 +50,8 @@ export class MatchingService {
     const myStatus = interested ? MatchUserStatus.INTERESTED : MatchUserStatus.PASSED;
     const isUserOne = match.userOneId === userId;
 
-    // A note only ever makes sense alongside Interested, and is a Premium perk —
-    // silently drop it otherwise rather than erroring over a cosmetic extra.
+    // A note only ever makes sense alongside Interested and is a Premium perk.
+    // Silently drop it otherwise rather than erroring over a cosmetic extra.
     const plan = await this.getPlan(userId);
     const canAttachNote = interested && !!note?.trim() && PLAN_CONFIG[plan].canSendInterestNote;
     const data = isUserOne
@@ -69,7 +69,7 @@ export class MatchingService {
     return this.toCandidateDto(userId, updated);
   }
 
-  /** A single match by id — e.g. so the chat thread header can show/link to who you're talking to. */
+  /** A single match by id, e.g. so the chat thread header can show/link to who you're talking to. */
   async getMatch(userId: string, matchId: string) {
     const match = await this.prisma.match.findUnique({ where: { id: matchId } });
     if (!match || (match.userOneId !== userId && match.userTwoId !== userId)) {
@@ -78,7 +78,7 @@ export class MatchingService {
     return this.toCandidateDto(userId, match);
   }
 
-  /** Mutual matches — these are the chat-eligible threads. */
+  /** Mutual matches. These are the chat-eligible threads. */
   async listMyMutualMatches(userId: string) {
     const matches = await this.prisma.match.findMany({
       where: { OR: [{ userOneId: userId }, { userTwoId: userId }], mutualAt: { not: null } },

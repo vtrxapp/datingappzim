@@ -81,7 +81,7 @@ export class PaynowPaymentProvider implements PaymentProvider {
   }
 
   /** Concatenate field VALUES in a fixed order, append the (never-transmitted) integration
-   * key, then SHA512-hex-uppercase — Paynow's documented hash scheme for both requests and
+   * key, then SHA512-hex-uppercase. Paynow's documented hash scheme for both requests and
    * verifying responses. */
   private hash(values: string[]): string {
     const integrationKey = this.configService.get<string>('payment.paynow.integrationKey')!;

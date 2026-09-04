@@ -13,7 +13,7 @@ export interface ScoringInput {
   candidateVerificationStatus: VerificationStatus;
 }
 
-/** Pure rule-based scorer — no ML. Higher is better. */
+/** Pure rule-based scorer, no ML. Higher is better. */
 export function scoreCandidate(input: ScoringInput): number {
   let score = 0;
 
@@ -26,7 +26,7 @@ export function scoreCandidate(input: ScoringInput): number {
   const sharedValues = input.myCoreValues.filter((v) => input.candidateCoreValues.includes(v));
   score += sharedValues.length * MATCHING_CONFIG.pointsPerSharedCoreValue;
 
-  // Hobbies are free text (custom entries allowed), so compare case/whitespace-insensitively —
+  // Hobbies are free text (custom entries allowed), so compare case/whitespace-insensitively.
   // "Hiking" and "hiking " should still count as the same answer.
   const normalize = (s: string) => s.trim().toLowerCase();
   const candidateHobbiesNormalized = input.candidateHobbies.map(normalize);

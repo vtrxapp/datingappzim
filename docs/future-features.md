@@ -16,7 +16,7 @@ factor (or a hard filter, depending on the product decision).
 
 ## Church/denomination partner matching
 
-Same shape as totem matching — a `denomination` questionnaire question plus
+Same shape as totem matching: a `denomination` questionnaire question plus
 a scoring/filter rule. Deferred because it changes the onboarding
 questionnaire's length and framing (the MVP intentionally caps it at ~7
 questions for a sub-90-second flow) and needs a decision on how prescriptive
@@ -35,13 +35,13 @@ single check-in contact.
 ## ML-based matching
 
 The MVP's matching is intentionally rule-based
-(`apps/api/src/matching/matching-scoring.util.ts`) — no model training, no
+(`apps/api/src/matching/matching-scoring.util.ts`), no model training, no
 ranking service. This is a deliberate choice: there isn't enough real
-interaction data yet to train or evaluate a model against, and a
+interaction data yet to train or evaluate a model against. A
 transparent, debuggable scoring function is easier to tune during early
 growth. Once there's a meaningful volume of `Match` outcomes (interested /
 passed / mutual / message counts), that data is already structured to train
-a ranking model later — the `MatchingService.generateIntroductions` method
+a ranking model later. The `MatchingService.generateIntroductions` method
 is the single seam where a model's output could replace `scoreCandidate`
 without changing any controller, DTO, or frontend code.
 
@@ -54,8 +54,8 @@ next step once there's product-market fit, not before.
 ## Payments beyond a single Premium tier
 
 Plan/pricing config (`packages/shared/src/plans.ts`) already supports adding
-more `SubscriptionPlanId` values, and `PaymentProvider` already supports
+more `SubscriptionPlanId` values. `PaymentProvider` already supports
 adding OneMoney/PesePay/card implementations alongside `PaynowPaymentProvider`.
 Multiple tiers, add-ons, or one-off purchases (e.g., a boost) are
-deliberately not built yet — the brief asked for a single Premium tier for
+deliberately not built yet. The brief asked for a single Premium tier for
 MVP.

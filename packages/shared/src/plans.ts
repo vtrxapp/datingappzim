@@ -2,7 +2,7 @@ import { SubscriptionPlanId } from './enums';
 
 /**
  * Pricing/entitlement config for subscription plans. Intentionally NOT
- * hardcoded elsewhere — read this at runtime so pricing/quotas can be tuned
+ * hardcoded elsewhere. Read this at runtime so pricing/quotas can be tuned
  * without a code change. USD is used because EcoCash/Paynow settlement and
  * most Zimbabwean digital subscriptions are priced in USD to avoid local
  * currency volatility; adjust here if that assumption changes.

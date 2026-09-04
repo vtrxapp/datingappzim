@@ -116,7 +116,7 @@ function SettingsContent() {
     formData.append('document', file);
     try {
       await api.postForm('/profiles/me/verification', formData);
-      setMessage('Submitted for review — we usually get to these within a day or two.');
+      setMessage('Submitted for review. We usually get to these within a day or two.');
       load();
     } catch (err) {
       setMessage(err instanceof ApiError ? err.message : 'Could not submit your document.');
@@ -234,7 +234,7 @@ function SettingsContent() {
         ) : (
           <>
             <p className="mb-2 text-sm text-gray-500">
-              Upload a photo ID to get a Verified badge — it helps others trust your profile.
+              Upload a photo ID to get a Verified badge. It helps others trust your profile.
             </p>
             <button
               onClick={() => idInputRef.current?.click()}

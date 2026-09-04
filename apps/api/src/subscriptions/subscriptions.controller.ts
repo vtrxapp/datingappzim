@@ -26,7 +26,7 @@ export class SubscriptionsController {
     return this.subscriptionsService.checkPaymentStatus(user.id, id);
   }
 
-  /** Paynow's server-to-server callback — not user-authenticated, Paynow posts here directly. */
+  /** Paynow's server-to-server callback, not user-authenticated, Paynow posts here directly. */
   @Post('payments/webhook')
   @HttpCode(200)
   async handleWebhook(@Body() payload: Record<string, string>) {

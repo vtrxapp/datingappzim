@@ -12,7 +12,7 @@ const PALETTE: Record<LogoTheme, { teal: string; coral: string; gold: string; te
 export interface LogoProps {
   /** icon: mark only. lockup: mark + wordmark side by side. stacked: mark above wordmark. */
   variant?: LogoVariant;
-  /** Which surface the logo sits on — picks the light- or dark-tinted mark. */
+  /** Which surface the logo sits on. Picks the light- or dark-tinted mark. */
   theme?: LogoTheme;
   /** Icon edge length in px; wordmark size and gaps scale off this. */
   size?: number;

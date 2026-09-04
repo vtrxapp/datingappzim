@@ -1,6 +1,6 @@
 /**
  * One-off dev utility: gives any existing Profile with zero photos a simple
- * initials-avatar (a colored circle + letter), generated locally — not a
+ * initials-avatar (a colored circle + letter), generated locally, not a
  * fabricated "photo of a person," just a placeholder so the app doesn't show
  * an empty photo grid for profiles created before photo upload existed.
  * Reuses the real ImageCompressionService/LocalStorageProvider so the result
@@ -46,7 +46,7 @@ async function main() {
     seeded += 1;
   }
 
-  console.log(seeded > 0 ? `Done — seeded ${seeded} profile(s).` : 'Nothing to do — every profile already has a photo.');
+  console.log(seeded > 0 ? `Done: seeded ${seeded} profile(s).` : 'Nothing to do: every profile already has a photo.');
   await prisma.$disconnect();
 }
 

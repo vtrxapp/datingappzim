@@ -57,7 +57,7 @@ export function HobbiesInput({ value, onChange }: { value: string[]; onChange: (
           }}
           maxLength={MAX_HOBBY_LENGTH}
           disabled={atMax}
-          placeholder={atMax ? `You've added ${MAX_HOBBIES}` : 'Type a hobby — the more specific, the better'}
+          placeholder={atMax ? `You've added ${MAX_HOBBIES}` : 'Type a hobby. The more specific, the better'}
           className="flex-1 rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 disabled:text-gray-400"
         />
         <button

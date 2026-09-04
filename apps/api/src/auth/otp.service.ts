@@ -35,7 +35,7 @@ export class OtpService {
     return createHmac('sha256', secret).update(code).digest('hex');
   }
 
-  /** Generates a fresh OTP, stores its hash in Redis, and returns the plaintext code to send. */
+  /** Generates a fresh OTP, stores its hash in Redis and returns the plaintext code to send. */
   async generate(phone: string): Promise<string> {
     const stillInCooldown = await this.redis.exists(this.cooldownKey(phone));
     if (stillInCooldown) {

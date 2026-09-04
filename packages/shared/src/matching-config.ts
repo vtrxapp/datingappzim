@@ -13,7 +13,7 @@ export const MATCHING_CONFIG = {
   maxAgeGapForScore: 20,
   /** Points per shared core value (questionnaire CORE_VALUES overlap). */
   pointsPerSharedCoreValue: 10,
-  /** Points per shared hobby (questionnaire HOBBIES overlap) — a lighter
+  /** Points per shared hobby (questionnaire HOBBIES overlap), a lighter
    * signal than core values, since hobbies are optional and lower-stakes. */
   pointsPerSharedHobby: 4,
   /** Points added if the candidate is ID-verified. */

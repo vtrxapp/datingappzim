@@ -36,7 +36,7 @@ function AdmirersContent() {
 
       {!data && <p className="text-sm text-gray-500">Loading…</p>}
 
-      {data && data.count === 0 && <p className="text-sm text-gray-500">No one yet — check back soon!</p>}
+      {data && data.count === 0 && <p className="text-sm text-gray-500">No one yet. Check back soon!</p>}
 
       <div className="space-y-3">
         {data?.profiles.map((match) => (

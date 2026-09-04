@@ -11,7 +11,7 @@ const premium = PLAN_CONFIG[SubscriptionPlanId.PREMIUM];
 const free = PLAN_CONFIG[SubscriptionPlanId.FREE];
 const PREMIUM_FEATURES = [
   `${premium.dailyIntroductions} daily introductions, instead of ${free.dailyIntroductions}`,
-  `See everyone who's interested in you — Free only shows your most recent ${free.maxVisibleAdmirers}`,
+  `See everyone who's interested in you. Free only shows your most recent ${free.maxVisibleAdmirers}`,
   'Add a personal note when you say Interested, so they see it before they respond',
 ];
 

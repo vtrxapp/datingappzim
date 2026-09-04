@@ -6,7 +6,7 @@ import { NotificationsService } from './notifications.service';
 @Module({
   providers: [
     {
-      // SMS_PROVIDER currently only supports "mock" — swap this factory to
+      // SMS_PROVIDER currently only supports "mock". Swap this factory to
       // return a real gateway implementation (Twilio, Africa's Talking,
       // WhatsApp Business API) once a provider is contracted.
       provide: MESSAGING_PROVIDER,

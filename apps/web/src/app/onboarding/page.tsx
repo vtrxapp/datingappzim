@@ -15,7 +15,7 @@ export default function OnboardingPage() {
   const router = useRouter();
 
   // Photo and hobbies are deliberately left out of onboarding to keep signup
-  // short — they're collected afterwards from Settings, nudged by the
+  // short. They're collected afterwards from Settings, nudged by the
   // "complete your profile to respond" banner on Matches (see
   // ProfilesService.assertReadyToExpressInterest).
   const steps = useMemo(

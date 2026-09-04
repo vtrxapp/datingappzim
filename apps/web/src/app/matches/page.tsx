@@ -89,7 +89,7 @@ function MatchesContent() {
       {matches === null && <p className="text-sm text-gray-500">Loading…</p>}
       {matches?.length === 0 && (
         <p className="text-sm text-gray-500">
-          No new introductions right now — check back tomorrow, or upgrade to Premium for more.
+          No new introductions right now. Check back tomorrow, or upgrade to Premium for more.
         </p>
       )}
 
@@ -180,7 +180,7 @@ function MatchesContent() {
               </div>
             ) : (
               <div className="border-t border-brand-100 p-3 text-center text-sm text-gray-500">
-                {match.myStatus === 'INTERESTED' ? "You're interested — waiting on them" : 'You passed'}
+                {match.myStatus === 'INTERESTED' ? "You're interested, waiting on them" : 'You passed'}
                 {match.myNote && <p className="mt-1 italic text-gray-400">You said: "{match.myNote}"</p>}
               </div>
             )}

@@ -46,7 +46,7 @@ function ProfileContent() {
     try {
       await api.post('/reports', { reportedUserId: userId, reason: reportReason, details: reportDetails || undefined });
       setShowReport(false);
-      setStatusMessage('Thanks — our team will review this.');
+      setStatusMessage('Thanks, our team will review this.');
     } catch {
       setStatusMessage('Could not submit your report. Please try again.');
     }

@@ -3,7 +3,7 @@
  * validates submitted answers against it and uses `usedInScoring` fields
  * for rule-based matching; the frontend's onboarding wizard
  * (apps/web/src/app/onboarding/page.tsx) renders every question here
- * EXCEPT HOBBIES — that one is deliberately left out of onboarding (kept
+ * EXCEPT HOBBIES, that one is deliberately left out of onboarding (kept
  * to signup-friction-free ~7 questions) and is only ever answered from
  * Settings, alongside a profile photo. Both are required before a user can
  * act on a match (Interested or Pass); see
@@ -30,7 +30,7 @@ export interface QuestionDefinition {
   /** Max selectable options for MULTI_SELECT (deal-breakers/values). */
   maxSelections?: number;
   /** MULTI_SELECT only: besides picking from `options`, the user can also type
-   * their own free-text entries (e.g. HOBBIES) — validation only checks
+   * their own free-text entries (e.g. HOBBIES). Validation only checks
    * shape/length, not membership in `options`, which become suggestions. */
   allowCustomValues?: boolean;
   /** Whether the matching engine reads this answer when scoring candidates. */
@@ -114,7 +114,7 @@ export const QUESTIONNAIRE: QuestionDefinition[] = [
     prompt: "What are you looking for?",
     helperText: 'This app is focused on marriage-track relationships only.',
     required: true,
-    options: [{ value: 'MARRIAGE', label: "Marriage — I'm ready to settle down" }],
+    options: [{ value: 'MARRIAGE', label: "Marriage: I'm ready to settle down" }],
     usedInScoring: false,
   },
   {
@@ -152,7 +152,7 @@ export const QUESTIONNAIRE: QuestionDefinition[] = [
     type: 'MULTI_SELECT',
     prompt: 'What do you enjoy doing?',
     helperText:
-      "Type your own — specific is better than generic, it gives people something to open a chat with. " +
+      "Type your own. Specific is better than generic, it gives people something to open a chat with. " +
       "You can skip this now, but you'll need at least one before you can respond to matches.",
     required: false,
     options: HOBBY_OPTIONS,

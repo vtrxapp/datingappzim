@@ -65,7 +65,7 @@ export class SubscriptionsService {
     const result = await this.paymentProvider.initiate({
       reference: transaction.id,
       amountUsd: planConfig.priceUsd,
-      description: `${planConfig.label} subscription — Tariro`,
+      description: `${planConfig.label} subscription: Tariro`,
       payerPhone: user.phone,
     });
 
@@ -112,8 +112,8 @@ export class SubscriptionsService {
 
   /** Paynow's server-to-server resulturl callback. NOTE: does not yet verify Paynow's
    * response hash (see PaynowPaymentProvider's header comment on why that was not safe
-   * to implement without live access to the current docs) — treat this as a convenience
-   * fast-path on top of the authoritative poll-based checkPaymentStatus, and add
+   * to implement without live access to the current docs). Treat this as a convenience
+   * fast-path on top of the authoritative poll-based checkPaymentStatus and add
    * signature verification here before accepting real payments. */
   async handleWebhook(payload: Record<string, string>) {
     const transaction = await this.prisma.paymentTransaction.findUnique({ where: { id: payload.reference } });

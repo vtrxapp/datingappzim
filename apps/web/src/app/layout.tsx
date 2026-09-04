@@ -11,7 +11,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: 'Tariro — Marriage-minded matches',
+  title: 'Tariro: Marriage-minded matches',
   description: 'Curated, safety-first matchmaking for Zimbabweans ready to settle down.',
   manifest: '/manifest.json',
 };

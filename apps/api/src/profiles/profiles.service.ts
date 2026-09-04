@@ -77,7 +77,7 @@ export class ProfilesService {
       throw new BadRequestException('Verification is already pending or approved');
     }
     // Compressed like any other photo: the ID photo just needs to be legible for
-    // manual admin review, not full resolution, and this keeps upload bandwidth low.
+    // manual admin review, not full resolution. This keeps upload bandwidth low.
     const { url } = await this.storageService.uploadCompressedImage(`verification/${profile.id}`, fileBuffer);
     return this.prisma.profile.update({
       where: { userId },
@@ -87,7 +87,7 @@ export class ProfilesService {
 
   /**
    * At least one photo and one hobby are required before a user can act on a
-   * match (Interested or Pass) — a deliberate product decision to nudge
+   * match (Interested or Pass). A deliberate product decision to nudge
    * profile completion once someone has already seen real matches, without
    * gating onboarding itself (they still see their first batch immediately).
    */

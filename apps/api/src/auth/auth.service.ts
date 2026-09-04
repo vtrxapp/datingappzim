@@ -100,7 +100,7 @@ export class AuthService {
       });
       await this.redis.del(`refresh:jti:${payload.jti}`);
     } catch {
-      // Already invalid/expired — nothing to revoke.
+      // Already invalid/expired, nothing to revoke.
     }
   }
 }

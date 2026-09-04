@@ -29,7 +29,7 @@ export interface MatchCandidateDto {
   theirStatus: MatchUserStatus;
   isMutual: boolean;
   introducedAt: string;
-  /** A short note sent alongside Interested (Premium only) — from me to them. */
+  /** A short note sent alongside Interested (Premium only), from me to them. */
   myNote: string | null;
   /** The note they sent alongside their Interested, if any. */
   theirNote: string | null;

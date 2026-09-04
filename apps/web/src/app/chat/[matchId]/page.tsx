@@ -165,7 +165,7 @@ function ChatThreadContent() {
 }
 
 /**
- * Swipe right past a threshold to reply — the same gesture as WhatsApp/Messenger.
+ * Swipe right past a threshold to reply, the same gesture as WhatsApp/Messenger.
  * Tracked with pointer events (not touch-only) so it works with mouse drag too.
  */
 function MessageBubble({

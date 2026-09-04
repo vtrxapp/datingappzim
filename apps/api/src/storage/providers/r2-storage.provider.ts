@@ -6,7 +6,7 @@ import { StorageProvider, UploadResult } from '../storage-provider.interface';
 /**
  * Cloudflare R2 is S3-compatible, so the AWS SDK v3 S3 client works against
  * it by pointing `endpoint` at the account's R2 endpoint. Assumes the bucket
- * (or a custom domain in front of it) is configured for public read access —
+ * (or a custom domain in front of it) is configured for public read access.
  * R2_PUBLIC_BASE_URL is that public origin.
  */
 @Injectable()

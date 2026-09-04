@@ -3,7 +3,7 @@ import { PaymentTransactionStatus } from 'shared';
 export const PAYMENT_PROVIDER = 'PAYMENT_PROVIDER';
 
 export interface InitiatePaymentInput {
-  /** Our own PaymentTransaction id — sent back to us via the provider's webhook/reference. */
+  /** Our own PaymentTransaction id, sent back to us via the provider's webhook/reference. */
   reference: string;
   amountUsd: number;
   description: string;

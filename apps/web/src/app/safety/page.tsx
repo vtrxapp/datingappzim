@@ -17,7 +17,7 @@ interface CheckinRow {
 const STATUS_LABEL: Record<CheckinRow['status'], string> = {
   SCHEDULED: 'Scheduled',
   CONFIRMED_SAFE: "Confirmed you're safe",
-  MISSED: 'Missed — contact was alerted',
+  MISSED: 'Missed, contact was alerted',
   CANCELLED: 'Cancelled',
 };
 

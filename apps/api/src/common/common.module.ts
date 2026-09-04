@@ -14,7 +14,7 @@ import { AdminGuard } from './guards/admin.guard';
   providers: [JwtAuthGuard, AdminGuard],
   // Re-exporting JwtModule (not just the guards) matters: `@UseGuards(JwtAuthGuard)`
   // instantiates the guard fresh in whichever module the controller lives in, so
-  // JwtService itself — not just JwtAuthGuard — must be part of this module's
+  // JwtService itself, not just JwtAuthGuard, must be part of this module's
   // global exports for that resolution to succeed in every feature module.
   exports: [JwtModule, JwtAuthGuard, AdminGuard],
 })

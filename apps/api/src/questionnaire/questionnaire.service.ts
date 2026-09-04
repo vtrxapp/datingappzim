@@ -20,7 +20,7 @@ export class QuestionnaireService {
     return this.prisma.questionnaireResponse.findMany({ where: { userId } });
   }
 
-  /** Lets someone add/edit hobbies after onboarding — e.g. if they skipped it
+  /** Lets someone add/edit hobbies after onboarding, e.g. if they skipped it
    * initially and now need it to respond to matches. */
   async updateHobbies(userId: string, hobbies: string[]): Promise<{ ok: true }> {
     const question = QUESTIONNAIRE.find((q) => q.key === 'HOBBIES')!;
@@ -46,7 +46,7 @@ export class QuestionnaireService {
 
     const ageRange = dto.answers.SEEKING_AGE_RANGE as { min: number; max: number };
 
-    // Optional questions (currently just HOBBIES) can be left unanswered — skip persisting
+    // Optional questions (currently just HOBBIES) can be left unanswered. Skip persisting
     // those rather than writing an empty/undefined value into the required Json column.
     const answeredQuestions = QUESTIONNAIRE.filter((question) => {
       const value = dto.answers[question.key];

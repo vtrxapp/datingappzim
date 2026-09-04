@@ -1,8 +1,8 @@
-// Zimbabwe dating app MVP — primary datastore schema.
+// Zimbabwe dating app MVP: primary datastore schema.
 // Conventions:
 //  - UUID primary keys everywhere.
 //  - Soft-delete on User via `deletedAt` (never hard-delete user data on
-//    account closure — history stays for safety/audit purposes).
+//    account closure, history stays for safety/audit purposes).
 //  - Match.userOneId/userTwoId is always stored with the lexicographically
 //    smaller UUID first (enforced in matching.service.ts) so a pair can
 //    never produce two separate Match rows.

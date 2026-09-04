@@ -1,7 +1,7 @@
 /**
  * These are modeled as `const` objects + derived union types (not `enum`)
  * so they are *structurally* compatible with Prisma's own generated enum
- * types in apps/api — Prisma generates the same const-object pattern, and
+ * types in apps/api. Prisma generates the same const-object pattern and
  * TypeScript compares string-literal unions structurally but real `enum`
  * declarations nominally. Using `enum` here would force casts at every
  * Prisma <-> shared boundary in the backend.
@@ -10,7 +10,7 @@
  * seeking man). Gender and SeekingGender are deliberately modeled as single
  * values, not arrays, to keep that scope explicit. If this is revisited later,
  * extend both and change `seekingGender` on Profile to an array without
- * needing to touch unrelated modules — matching filters are centralized in
+ * needing to touch unrelated modules. Matching filters are centralized in
  * apps/api/src/matching/matching.service.ts.
  */
 export const Gender = {

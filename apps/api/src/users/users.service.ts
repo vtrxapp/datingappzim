@@ -56,7 +56,7 @@ export class UsersService {
     return this.prisma.user.update({ where: { id: userId }, data: { onboardingComplete: true } });
   }
 
-  /** Soft-delete only — message/match/report history is preserved for safety and audit purposes. */
+  /** Soft-delete only. Message/match/report history is preserved for safety and audit purposes. */
   deactivate(userId: string) {
     return this.prisma.user.update({
       where: { id: userId },

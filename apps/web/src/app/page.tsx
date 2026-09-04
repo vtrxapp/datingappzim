@@ -28,8 +28,8 @@ export default function HomePage() {
       <div className="mt-16 space-y-4 text-center">
         <Logo variant="stacked" size={64} />
         <p className="text-gray-600">
-          Curated introductions for Zimbabweans ready to settle down. No swiping, no games — just a few
-          thoughtful matches a day, and safety built in from the start.
+          Curated introductions for Zimbabweans ready to settle down. No swiping, no games. Just a few
+          thoughtful matches a day and safety built in from the start.
         </p>
       </div>
       <div className="space-y-3 pb-8">
