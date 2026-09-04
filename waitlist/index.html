@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tariro Waitlist</title>
+<meta name="description" content="Join the pre-launch waitlist for Tariro. Curated matchmaking for Harare and Bulawayo. No swiping, no endless feed.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI4MCIgY3k9IjEwMCIgcj0iNTUiIGZpbGw9IiMyQjYxNTciLz48Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMDAiIHI9IjU1IiBmaWxsPSIjRTg2NzRGIi8+PGNsaXBQYXRoIGlkPSJsZW5zIj48Y2lyY2xlIGN4PSI4MCIgY3k9IjEwMCIgcj0iNTUiLz48L2NsaXBQYXRoPjxjaXJjbGUgY3g9IjEyMCIgY3k9IjEwMCIgcj0iNTUiIGZpbGw9IiNEOUE0NDEiIGNsaXAtcGF0aD0idXJsKCNsZW5zKSIvPjwvc3ZnPg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --cream:#fdf4f0;
+    --paper:#fffbf8;
+    --paper-line:#f0ddd2;
+    --ink:#2a1b14;
+    --ink-muted:#8a7466;
+    --ink-faint:#b7a296;
+    --rust:#c9542f;
+    --rust-deep:#7f2f18;
+    --rust-mid:#a63f21;
+    --rust-soft:#fbe4da;
+    --shadow: 0 18px 40px -18px rgba(90,45,20,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --cream:#160f0c;
+      --paper:#221712;
+      --paper-line:#3a2a21;
+      --ink:#f5ece6;
+      --ink-muted:#c2ab9c;
+      --ink-faint:#8a7466;
+      --rust:#e8895f;
+      --rust-deep:#f2b28f;
+      --rust-mid:#e8895f;
+      --rust-soft:#3a2a21;
+      --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#160f0c;
+    --paper:#221712;
+    --paper-line:#3a2a21;
+    --ink:#f5ece6;
+    --ink-muted:#c2ab9c;
+    --ink-faint:#8a7466;
+    --rust:#e8895f;
+    --rust-deep:#f2b28f;
+    --rust-mid:#e8895f;
+    --rust-soft:#3a2a21;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:"Karla",system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif; text-wrap:balance; color:var(--ink); margin:0;}
+  p{margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:640px; margin:0 auto; padding-left:22px; padding-right:22px;}
+  .wide{max-width:760px; margin:0 auto; padding-left:22px; padding-right:22px;}
+
+  .eyebrow{
+    font-family:"Karla",sans-serif; font-weight:700; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--rust-mid); display:flex; align-items:center; gap:9px;
+  }
+  .eyebrow::before{content:""; width:20px; height:1px; background:var(--rust-mid); flex:none;}
+
+  /* ---------- header ---------- */
+  header{padding:22px 0 6px;}
+  .header-row{display:flex; align-items:center; justify-content:space-between; gap:14px;}
+  .brand-lockup{display:flex; align-items:center; gap:9px;}
+  .wordmark{font-family:"Fraunces",serif; font-weight:600; font-size:19px; letter-spacing:-.01em; color:var(--ink);}
+  .header-cta{
+    font-family:"Karla",sans-serif; font-weight:700; font-size:13.5px; color:var(--rust-mid);
+    text-decoration:none; border-bottom:1px solid var(--rust-soft); padding-bottom:2px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:44px 0 40px;}
+  .hero-head{margin-top:16px;}
+  .hero h1{font-size:clamp(30px,7vw,42px); font-weight:600; line-height:1.12;}
+  .hero h1 em{font-style:normal; color:var(--rust-mid);}
+  .hero-sub{
+    margin-top:16px; font-size:16.5px; color:var(--ink-muted); max-width:52ch; line-height:1.65;
+  }
+  .hero-actions{margin-top:26px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .btn-primary{
+    display:inline-flex; align-items:center; gap:9px; background:var(--rust); color:#fff9f6;
+    font-family:"Karla",sans-serif; font-weight:700; font-size:15px; padding:13px 22px;
+    border-radius:11px; text-decoration:none; border:none; cursor:pointer;
+    box-shadow:0 10px 24px -10px rgba(201,84,47,.55); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 14px 28px -10px rgba(201,84,47,.6);}
+  .btn-primary svg{flex:none;}
+  .hero-note{font-size:13px; color:var(--ink-faint);}
+
+  /* hand-of-cards visual */
+  .hand{
+    position:relative; height:230px; margin:40px 0 8px; max-width:420px;
+  }
+  .intro-card{
+    position:absolute; top:0; width:172px; background:var(--paper); border:1px solid var(--paper-line);
+    border-radius:16px; padding:14px 14px 15px; box-shadow:var(--shadow);
+    animation:deal .6s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .intro-card .avatar{
+    width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:"Fraunces",serif; font-weight:600; font-size:16px; color:#fff9f6; margin-bottom:10px;
+  }
+  .intro-card .name{font-family:"Fraunces",serif; font-weight:600; font-size:15px;}
+  .intro-card .city{font-size:12px; color:var(--ink-muted); margin-top:1px;}
+  .intro-card .why{
+    margin-top:9px; font-size:11.5px; color:var(--rust-mid); background:var(--rust-soft);
+    border-radius:7px; padding:5px 8px; line-height:1.35;
+  }
+  .card-a{left:0; top:14px; transform:rotate(-7deg); animation-delay:.05s; z-index:1;}
+  .card-b{left:120px; top:0; transform:rotate(2deg); animation-delay:.16s; z-index:3;}
+  .card-c{left:240px; top:20px; transform:rotate(9deg); animation-delay:.27s; z-index:2;}
+  @keyframes deal{
+    from{transform:translateY(16px) rotate(0deg) scale(.98);}
+  }
+  .hand-caption{font-size:12px; color:var(--ink-faint); margin-top:6px; font-style:italic;}
+  @media (prefers-reduced-motion: reduce){ .intro-card{animation:none;} }
+  @media (max-width:460px){
+    .hand{height:auto; display:flex; gap:10px; margin:32px 0 6px;}
+    .intro-card{position:static; width:auto; flex:1; transform:none !important; animation:none;}
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:50px 0;}
+  .rule{height:1px; background:var(--paper-line); border:none; margin:0;}
+  .section-head{margin-bottom:22px;}
+  .section-head h2{font-size:26px; font-weight:600; margin-top:10px;}
+
+  .why-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:26px;}
+  .why-list li{position:relative; padding-left:24px;}
+  .why-list li::before{
+    content:""; position:absolute; left:0; top:8px; width:9px; height:9px; border-radius:50%;
+    background:var(--rust-soft); border:1.5px solid var(--rust-mid);
+  }
+  .why-list strong{
+    display:block; font-family:"Fraunces",serif; font-weight:600; font-size:18px; margin-bottom:4px;
+  }
+  .why-list span{font-size:14.5px; color:var(--ink-muted); line-height:1.6;}
+
+  /* ---------- form ---------- */
+  .form-panel{
+    margin-top:24px; background:var(--paper); border:1px solid var(--paper-line); border-radius:20px;
+    padding:26px 24px 24px; box-shadow:var(--shadow);
+  }
+  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
+  .field label{font-size:12.5px; font-weight:700; color:var(--ink-muted); letter-spacing:.02em;}
+  .field input, .field select{
+    font:inherit; font-size:15px; padding:11px 13px; border-radius:10px; border:1px solid var(--paper-line);
+    background:var(--cream); color:var(--ink); outline:none;
+  }
+  .field input:focus, .field select:focus{border-color:var(--rust);}
+  .form-submit{width:100%; justify-content:center; margin-top:6px; font-size:15.5px; padding:14px 22px;}
+  .form-submit:disabled{opacity:.6; cursor:default;}
+  .form-error{margin-top:10px; font-size:13px; color:#b3261e;}
+  .form-fineprint{margin-top:12px; font-size:12px; color:var(--ink-faint); line-height:1.5;}
+  .form-success{
+    display:none; text-align:center; padding:20px 6px;
+  }
+  .form-success.is-visible{display:block;}
+  .form-success h3{font-size:19px;}
+  .form-success p{margin-top:8px; font-size:14px; color:var(--ink-muted); line-height:1.6;}
+  .form-fields.is-hidden{display:none;}
+
+  footer{padding:30px 0 44px; text-align:center;}
+  footer p{font-size:12.5px; color:var(--ink-faint); line-height:1.7;}
+  footer .foot-word{font-family:"Fraunces",serif; font-weight:600; color:var(--ink-muted);}
+
+  :focus-visible{outline:2px solid var(--rust); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="header-row">
+    <div class="brand-lockup">
+      <svg width="26" height="26" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="80" cy="100" r="55" fill="#2B6157"/>
+        <circle cx="120" cy="100" r="55" fill="#E8674F"/>
+        <clipPath id="headerLens"><circle cx="80" cy="100" r="55"/></clipPath>
+        <circle cx="120" cy="100" r="55" fill="#D9A441" clip-path="url(#headerLens)"/>
+      </svg>
+      <span class="wordmark">tariro</span>
+    </div>
+    <a class="header-cta" href="#waitlist">Get on the list →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <p class="eyebrow">Pre-launch · Harare &amp; Bulawayo</p>
+    <div class="hero-head">
+      <h1>No swiping.<br>No <em>infinite scroll</em>.</h1>
+      <p class="hero-sub">
+        Every day, we send you a short, considered list. Not everyone who's nearby,
+        just who's actually worth meeting.
+      </p>
+    </div>
+
+    <div class="hand" aria-hidden="true">
+      <div class="intro-card card-a">
+        <div class="avatar" style="background:#a63f21;">R</div>
+        <div class="name">Rutendo, 29</div>
+        <div class="city">Harare</div>
+        <div class="why">Shared: family-oriented, hiking</div>
+      </div>
+      <div class="intro-card card-b">
+        <div class="avatar" style="background:#7f2f18;">T</div>
+        <div class="name">Tinashe, 32</div>
+        <div class="city">Harare</div>
+        <div class="why">Shared: faith-centered, verified</div>
+      </div>
+      <div class="intro-card card-c">
+        <div class="avatar" style="background:#a9752f;">C</div>
+        <div class="name">Chiedza, 27</div>
+        <div class="city">Bulawayo</div>
+        <div class="why">Shared: career-driven, coffee</div>
+      </div>
+    </div>
+    <p class="hand-caption">Illustrative example: today's batch is capped at a handful, on purpose.</p>
+
+    <div class="hero-actions">
+      <a class="btn-primary" href="#waitlist">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.75 13.55L3 21l4.6-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 9.5c.3 3 2.7 5.3 5.7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Get on the list
+      </a>
+      <span class="hero-note">Takes 20 seconds · no app to download yet</span>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Why it's different</p>
+      <h2>Built against the swipe, on purpose.</h2>
+    </div>
+    <ul class="why-list">
+      <li>
+        <strong>No swipe grid.</strong>
+        <span>There's no deck of profiles to swipe through, no scrolling past strangers. Just who we send you, one batch at a time.</span>
+      </li>
+      <li>
+        <strong>A short list, not a crowd.</strong>
+        <span>We don't show you everyone who's signed up nearby. A small, considered batch each day, picked specifically for you.</span>
+      </li>
+      <li>
+        <strong>Chat only when it's mutual.</strong>
+        <span>No cold messages from strangers. You only start talking once you've both said yes. Your number stays private even then.</span>
+      </li>
+      <li>
+        <strong>A safety check-in, every time.</strong>
+        <span>Tell us who you're meeting and when, before a first date. Miss your check-in and your safety contact gets an alert.</span>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="rule">
+
+  <section class="wrap" id="waitlist">
+    <div class="section-head">
+      <p class="eyebrow">Join before we open</p>
+      <h2>Be one of the first through the door.</h2>
+      <p style="margin-top:10px; font-size:14.5px; color:var(--ink-muted); line-height:1.6;">
+        Harare and Bulawayo first. Leave your details and we'll reach out the moment we open up.
+      </p>
+    </div>
+
+    <form class="form-panel" id="waitlist-form">
+      <div class="form-fields" id="form-fields">
+        <div class="field">
+          <label for="wf-name">First name</label>
+          <input id="wf-name" name="name" type="text" placeholder="e.g. Tendai" required>
+        </div>
+        <div class="field">
+          <label for="wf-age">Age</label>
+          <input id="wf-age" name="age" type="number" inputmode="numeric" min="18" max="99" placeholder="e.g. 29" required>
+        </div>
+        <div class="field">
+          <label for="wf-phone">Phone number</label>
+          <input id="wf-phone" name="phone" type="tel" placeholder="+263 77 123 4567" required>
+        </div>
+        <div class="field">
+          <label for="wf-city">Where are you based?</label>
+          <input id="wf-city" name="city" type="text" placeholder="e.g. Harare, Bulawayo, Mutare…" required>
+        </div>
+        <button type="submit" id="wf-submit" class="btn-primary form-submit">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.75 13.55L3 21l4.6-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 9.5c.3 3 2.7 5.3 5.7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Join the waitlist
+        </button>
+        <p class="form-error" id="form-error" hidden></p>
+        <p class="form-fineprint">
+          We'll only use this to tell you when we launch. No spam, ever.
+        </p>
+      </div>
+      <div class="form-success" id="form-success">
+        <h3>You're on the list!</h3>
+        <p>We'll reach out the moment we launch in your city. See you soon
+          <svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M12 20s-7-4.4-9.5-9C1 8 2 4.5 5.5 4c2-.3 3.8.8 4.5 2.3C10.7 4.8 12.5 3.7 14.5 4c3.5.5 4.5 4 3 7-2.5 4.6-9.5 9-9.5 9Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+        </p>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>
+    <span class="foot-word">Tariro</span>: matchmaking for marriage-minded adults 18+.<br>
+    Currently building in Harare.
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  var SUPABASE_URL = "https://oppwmtqpfxlbogqpehtw.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_umVLIVhWcfk-cCdyR5GGEg_aG8Z-d6J";
+  var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var form = document.getElementById("waitlist-form");
+  var submitBtn = document.getElementById("wf-submit");
+  var fields = document.getElementById("form-fields");
+  var success = document.getElementById("form-success");
+  var errorEl = document.getElementById("form-error");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    var name = document.getElementById("wf-name").value.trim();
+    var age = document.getElementById("wf-age").value.trim();
+    var phone = document.getElementById("wf-phone").value.trim();
+    var city = document.getElementById("wf-city").value;
+
+    errorEl.hidden = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Joining…";
+
+    db.from("waitlist_signups")
+      .insert({ name: name, age: Number(age), phone: phone, city: city })
+      .then(function (result) {
+        if (result.error) throw result.error;
+        fields.classList.add("is-hidden");
+        success.classList.add("is-visible");
+      })
+      .catch(function () {
+        errorEl.textContent = "Something went wrong saving your spot. Please try again.";
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Join the waitlist";
+      });
+  });
+</script>
+
+</body>
+</html>
