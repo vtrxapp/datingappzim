@@ -13,7 +13,10 @@ export type IconName =
   | 'person'
   | 'chevronLeft'
   | 'chevronRight'
-  | 'reply';
+  | 'reply'
+  | 'eye'
+  | 'pencil'
+  | 'crown';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   check: <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />,
@@ -103,6 +106,34 @@ const PATHS: Record<IconName, React.ReactNode> = {
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  ),
+  eye: (
+    <>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" strokeWidth={1.8} fill="none" strokeLinejoin="round" />
+      <circle cx={12} cy={12} r={3} stroke="currentColor" strokeWidth={1.8} fill="none" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path
+        d="M4 20h4L18.5 9.5a2 2 0 0 0 0-2.8l-1.2-1.2a2 2 0 0 0-2.8 0L4 15.5V20Z"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        fill="none"
+        strokeLinejoin="round"
+      />
+      <path d="M14 6.5l3 3" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" />
+    </>
+  ),
+  crown: (
+    <path
+      d="M3 18h18l-1.4-8.2-4.1 3.2L12 6l-3.5 7-4.1-3.2L3 18Z"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      fill="none"
+      strokeLinejoin="round"
+      strokeLinecap="round"
     />
   ),
 };

@@ -8,7 +8,7 @@ import { City, CORE_VALUE_OPTIONS, QUESTIONNAIRE, SubscriptionStateDto } from 's
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { HobbiesInput } from '@/components/HobbiesInput';
-import { Icon } from '@/components/Icon';
+import { Icon, IconName } from '@/components/Icon';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
@@ -50,17 +50,20 @@ export default function SettingsPage() {
   );
 }
 
-/** A collapsed row shows just a title and a one-line summary of the current
- * value; tapping it expands to edit, in place, without navigating to a new
- * screen. Only one section is open at a time, so the settings page reads as
- * a short, scannable list instead of a long stack of always-open forms. */
+/** A collapsed row shows a leading icon, a title, and a summary of the
+ * current value (wrapped to two lines rather than cut off after one);
+ * tapping it expands to edit, in place, without navigating to a new screen.
+ * Only one section is open at a time, so the settings page reads as a
+ * short, scannable list instead of a long stack of always-open forms. */
 function SettingsSection({
+  icon,
   title,
   summary,
   isOpen,
   onToggle,
   children,
 }: {
+  icon: IconName;
   title: string;
   summary: string;
   isOpen: boolean;
@@ -69,16 +72,25 @@ function SettingsSection({
 }) {
   return (
     <section className="rounded-xl border border-gray-200 bg-white">
-      <button type="button" onClick={onToggle} aria-expanded={isOpen} className="flex w-full items-center gap-3 p-4 text-left">
+      <button type="button" onClick={onToggle} aria-expanded={isOpen} className="flex w-full items-center gap-3 p-3.5 text-left">
+        <span className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-brand-50 text-brand-500">
+          <Icon name={icon} size={17} />
+        </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold uppercase text-gray-400">{title}</span>
-          <span className="mt-0.5 block truncate text-sm text-gray-600">{summary}</span>
+          <span className="block text-xs font-semibold uppercase tracking-wide text-gray-400">{title}</span>
+          <span className="mt-0.5 block text-sm leading-snug text-gray-600 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden">
+            {summary}
+          </span>
         </span>
         <Icon name="chevronRight" size={14} className={`flex-none text-gray-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </button>
       {isOpen && <div className="space-y-3 border-t border-gray-100 p-4">{children}</div>}
     </section>
   );
+}
+
+function SettingsGroupLabel({ children }: { children: ReactNode }) {
+  return <p className="px-1 text-xs font-bold uppercase tracking-wide text-gray-400">{children}</p>;
 }
 
 function SettingsContent() {
@@ -268,15 +280,20 @@ function SettingsContent() {
       {me && (
         <Link
           href={`/profile/${me.userId}`}
-          className="flex items-center justify-between rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm font-semibold text-brand-700"
+          className="flex items-center gap-3 rounded-xl bg-brand-500 p-3.5 text-sm font-semibold text-white"
         >
-          Preview my profile
-          <Icon name="chevronRight" size={13} />
+          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-white/15">
+            <Icon name="eye" size={17} />
+          </span>
+          <span className="flex-1">Preview my profile</span>
+          <Icon name="chevronRight" size={14} />
         </Link>
       )}
 
       <div className="space-y-2">
+        <SettingsGroupLabel>Profile</SettingsGroupLabel>
         <SettingsSection
+          icon="camera"
           title="Photos"
           summary={`${photoDraftCount}/6 photos`}
           isOpen={openSection === 'photos'}
@@ -341,6 +358,7 @@ function SettingsContent() {
         </SettingsSection>
 
         <SettingsSection
+          icon="person"
           title="Name"
           summary={displayName || 'Add your name'}
           isOpen={openSection === 'name'}
@@ -359,7 +377,13 @@ function SettingsContent() {
           </button>
         </SettingsSection>
 
-        <SettingsSection title="Bio" summary={bio || 'Add a short bio'} isOpen={openSection === 'bio'} onToggle={() => toggleSection('bio')}>
+        <SettingsSection
+          icon="pencil"
+          title="Bio"
+          summary={bio || 'Add a short bio'}
+          isOpen={openSection === 'bio'}
+          onToggle={() => toggleSection('bio')}
+        >
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
@@ -373,7 +397,13 @@ function SettingsContent() {
           </button>
         </SettingsSection>
 
-        <SettingsSection title="Location" summary={citySummary} isOpen={openSection === 'location'} onToggle={() => toggleSection('location')}>
+        <SettingsSection
+          icon="pin"
+          title="Location"
+          summary={citySummary}
+          isOpen={openSection === 'location'}
+          onToggle={() => toggleSection('location')}
+        >
           <div className="space-y-2">
             {CITY_OPTIONS.map((opt) => (
               <button
@@ -393,15 +423,25 @@ function SettingsContent() {
           </button>
         </SettingsSection>
 
-        <SettingsSection title="Hobbies" summary={hobbiesSummary} isOpen={openSection === 'hobbies'} onToggle={() => toggleSection('hobbies')}>
+        <SettingsSection
+          icon="star"
+          title="Hobbies"
+          summary={hobbiesSummary}
+          isOpen={openSection === 'hobbies'}
+          onToggle={() => toggleSection('hobbies')}
+        >
           <p className="text-sm text-gray-500">You'll need at least one to respond to matches.</p>
           <HobbiesInput value={hobbies} onChange={setHobbies} />
           <button onClick={saveHobbies} className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
             Save hobbies
           </button>
         </SettingsSection>
+      </div>
 
+      <div className="space-y-2">
+        <SettingsGroupLabel>Preferences</SettingsGroupLabel>
         <SettingsSection
+          icon="heart"
           title="What are you looking for?"
           summary={intentSummary}
           isOpen={openSection === 'intent'}
@@ -430,6 +470,7 @@ function SettingsContent() {
         </SettingsSection>
 
         <SettingsSection
+          icon="sparkle"
           title="Core values"
           summary={coreValuesSummary}
           isOpen={openSection === 'coreValues'}
@@ -461,8 +502,12 @@ function SettingsContent() {
             Save core values
           </button>
         </SettingsSection>
+      </div>
 
+      <div className="space-y-2">
+        <SettingsGroupLabel>Account</SettingsGroupLabel>
         <SettingsSection
+          icon="shield"
           title="Verification"
           summary={verificationSummary}
           isOpen={openSection === 'verification'}
@@ -500,6 +545,7 @@ function SettingsContent() {
         </SettingsSection>
 
         <SettingsSection
+          icon="crown"
           title="Subscription"
           summary={subscriptionSummary}
           isOpen={openSection === 'subscription'}
@@ -518,6 +564,7 @@ function SettingsContent() {
 
         {blocks.length > 0 && (
           <SettingsSection
+            icon="close"
             title="Blocked"
             summary={`${blocks.length} blocked`}
             isOpen={openSection === 'blocked'}
