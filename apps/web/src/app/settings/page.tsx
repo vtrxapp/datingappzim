@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SubscriptionStateDto } from 'shared';
+import { CORE_VALUE_OPTIONS, QUESTIONNAIRE, SubscriptionStateDto } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { BottomNav } from '@/components/BottomNav';
 import { HobbiesInput } from '@/components/HobbiesInput';
@@ -35,6 +35,8 @@ interface QuestionnaireResponseRow {
   answerValue: unknown;
 }
 
+const RELATIONSHIP_INTENT_OPTIONS = QUESTIONNAIRE.find((q) => q.key === 'RELATIONSHIP_INTENT')!.options!;
+
 export default function SettingsPage() {
   return (
     <AuthGate>
@@ -51,6 +53,8 @@ function SettingsContent() {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [hobbies, setHobbies] = useState<string[]>([]);
+  const [coreValues, setCoreValues] = useState<string[]>([]);
+  const [relationshipIntent, setRelationshipIntent] = useState('');
   const [subscription, setSubscription] = useState<SubscriptionStateDto | null>(null);
   const [blocks, setBlocks] = useState<BlockRow[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -72,6 +76,10 @@ function SettingsContent() {
     api.get<QuestionnaireResponseRow[]>('/questionnaire/me').then((rows) => {
       const hobbiesRow = rows.find((r) => r.questionKey === 'HOBBIES');
       setHobbies(Array.isArray(hobbiesRow?.answerValue) ? (hobbiesRow.answerValue as string[]) : []);
+      const coreValuesRow = rows.find((r) => r.questionKey === 'CORE_VALUES');
+      setCoreValues(Array.isArray(coreValuesRow?.answerValue) ? (coreValuesRow.answerValue as string[]) : []);
+      const relationshipIntentRow = rows.find((r) => r.questionKey === 'RELATIONSHIP_INTENT');
+      setRelationshipIntent(typeof relationshipIntentRow?.answerValue === 'string' ? relationshipIntentRow.answerValue : '');
     });
     api.get<SubscriptionStateDto>('/subscriptions/me').then(setSubscription);
     api.get<BlockRow[]>('/blocks').then(setBlocks);
@@ -103,6 +111,24 @@ function SettingsContent() {
       setMessage('Hobbies saved.');
     } catch (err) {
       setMessage(err instanceof ApiError ? err.message : 'Could not save your hobbies.');
+    }
+  }
+
+  async function saveCoreValues() {
+    try {
+      await api.post('/questionnaire/core-values', { coreValues });
+      setMessage('Core values saved.');
+    } catch (err) {
+      setMessage(err instanceof ApiError ? err.message : 'Could not save your core values.');
+    }
+  }
+
+  async function saveRelationshipIntent() {
+    try {
+      await api.post('/questionnaire/relationship-intent', { relationshipIntent });
+      setMessage('Saved.');
+    } catch (err) {
+      setMessage(err instanceof ApiError ? err.message : 'Could not save that.');
     }
   }
 
@@ -269,6 +295,65 @@ function SettingsContent() {
         <HobbiesInput value={hobbies} onChange={setHobbies} />
         <button onClick={saveHobbies} className="mt-3 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
           Save hobbies
+        </button>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">What are you looking for?</h2>
+        <p className="mb-2 text-sm text-gray-500">This app is focused on marriage-track relationships only.</p>
+        <div className="space-y-2">
+          {RELATIONSHIP_INTENT_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setRelationshipIntent(opt.value)}
+              className={`w-full rounded-lg border px-4 py-3 text-left text-sm ${
+                relationshipIntent === opt.value
+                  ? 'border-brand-500 bg-brand-50 font-semibold text-brand-700'
+                  : 'border-gray-300 text-gray-700'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={saveRelationshipIntent}
+          className="mt-3 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Save
+        </button>
+      </section>
+
+      <section>
+        <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Core values</h2>
+        <p className="mb-2 text-sm text-gray-500">Pick up to 3 things that matter most to you.</p>
+        <div className="flex flex-wrap gap-2">
+          {CORE_VALUE_OPTIONS.map((opt) => {
+            const selected = coreValues.includes(opt.value);
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  if (selected) setCoreValues(coreValues.filter((v) => v !== opt.value));
+                  else if (coreValues.length < 3) setCoreValues([...coreValues, opt.value]);
+                }}
+                className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
+                  selected ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-300 text-gray-600'
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-2 text-xs text-gray-400">{coreValues.length}/3 selected</p>
+        <button
+          onClick={saveCoreValues}
+          className="mt-3 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Save core values
         </button>
       </section>
 

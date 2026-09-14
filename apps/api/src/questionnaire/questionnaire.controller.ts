@@ -5,6 +5,8 @@ import { RequestUser } from '../common/types/authenticated-request';
 import { QuestionnaireService } from './questionnaire.service';
 import { SubmitQuestionnaireDto } from './dto/submit-questionnaire.dto';
 import { UpdateHobbiesDto } from './dto/update-hobbies.dto';
+import { UpdateCoreValuesDto } from './dto/update-core-values.dto';
+import { UpdateRelationshipIntentDto } from './dto/update-relationship-intent.dto';
 
 @Controller('questionnaire')
 @UseGuards(JwtAuthGuard)
@@ -24,5 +26,15 @@ export class QuestionnaireController {
   @Post('hobbies')
   updateHobbies(@CurrentUser() user: RequestUser, @Body() dto: UpdateHobbiesDto) {
     return this.questionnaireService.updateHobbies(user.id, dto.hobbies);
+  }
+
+  @Post('core-values')
+  updateCoreValues(@CurrentUser() user: RequestUser, @Body() dto: UpdateCoreValuesDto) {
+    return this.questionnaireService.updateCoreValues(user.id, dto.coreValues);
+  }
+
+  @Post('relationship-intent')
+  updateRelationshipIntent(@CurrentUser() user: RequestUser, @Body() dto: UpdateRelationshipIntentDto) {
+    return this.questionnaireService.updateRelationshipIntent(user.id, dto.relationshipIntent);
   }
 }

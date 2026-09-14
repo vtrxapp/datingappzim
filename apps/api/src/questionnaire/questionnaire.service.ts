@@ -34,6 +34,32 @@ export class QuestionnaireService {
     return { ok: true };
   }
 
+  /** Lets someone update their core values after onboarding. */
+  async updateCoreValues(userId: string, coreValues: string[]): Promise<{ ok: true }> {
+    const question = QUESTIONNAIRE.find((q) => q.key === 'CORE_VALUES')!;
+    this.validateAnswer(question, coreValues);
+
+    await this.prisma.questionnaireResponse.upsert({
+      where: { userId_questionKey: { userId, questionKey: 'CORE_VALUES' } },
+      update: { answerValue: coreValues },
+      create: { userId, questionKey: 'CORE_VALUES', answerValue: coreValues },
+    });
+    return { ok: true };
+  }
+
+  /** Lets someone update what they're looking for after onboarding. */
+  async updateRelationshipIntent(userId: string, relationshipIntent: string): Promise<{ ok: true }> {
+    const question = QUESTIONNAIRE.find((q) => q.key === 'RELATIONSHIP_INTENT')!;
+    this.validateAnswer(question, relationshipIntent);
+
+    await this.prisma.questionnaireResponse.upsert({
+      where: { userId_questionKey: { userId, questionKey: 'RELATIONSHIP_INTENT' } },
+      update: { answerValue: relationshipIntent },
+      create: { userId, questionKey: 'RELATIONSHIP_INTENT', answerValue: relationshipIntent },
+    });
+    return { ok: true };
+  }
+
   async submit(userId: string, dto: SubmitQuestionnaireDto) {
     for (const question of QUESTIONNAIRE) {
       this.validateAnswer(question, dto.answers[question.key]);
