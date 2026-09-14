@@ -196,6 +196,16 @@ function SettingsContent() {
 
       {message && <p className="text-sm text-brand-600">{message}</p>}
 
+      {me && (
+        <Link
+          href={`/profile/${me.userId}`}
+          className="flex items-center justify-between rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm font-semibold text-brand-700"
+        >
+          Preview my profile
+          <Icon name="chevronRight" size={13} />
+        </Link>
+      )}
+
       <section>
         <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Photos ({photoDraftCount}/6)</h2>
         <div className="grid grid-cols-3 gap-2">

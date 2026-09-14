@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ProfileSummaryDto, ReportReason } from 'shared';
 import { AuthGate } from '@/components/AuthGate';
 import { Icon } from '@/components/Icon';
 import { PhotoCarousel } from '@/components/PhotoCarousel';
 import { api, ApiError } from '@/lib/api-client';
+import { useAuth } from '@/lib/auth-context';
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
   { value: 'FAKE_PROFILE', label: 'Fake profile' },
@@ -29,6 +31,8 @@ export default function ProfilePage() {
 function ProfileContent() {
   const { userId } = useParams<{ userId: string }>();
   const router = useRouter();
+  const { me } = useAuth();
+  const isSelf = me?.userId === userId;
   const [profile, setProfile] = useState<ProfileSummaryDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showReport, setShowReport] = useState(false);
@@ -84,6 +88,12 @@ function ProfileContent() {
       </div>
 
       <div className="space-y-3 p-4">
+        {isSelf && (
+          <p className="rounded-lg bg-brand-50 px-3 py-2 text-center text-sm font-semibold text-brand-700">
+            This is how others see your profile
+          </p>
+        )}
+
         <div>
           <h1 className="text-xl font-bold">
             {profile.displayName}, {profile.age}
@@ -109,14 +119,23 @@ function ProfileContent() {
 
         {statusMessage && <p className="text-sm text-brand-600">{statusMessage}</p>}
 
-        <div className="flex gap-3 pt-4">
-          <button onClick={() => setShowReport(true)} className="flex-1 rounded-lg border border-gray-300 py-2 text-sm text-gray-600">
-            Report
-          </button>
-          <button onClick={blockUser} className="flex-1 rounded-lg border border-red-300 py-2 text-sm text-red-600">
-            Block
-          </button>
-        </div>
+        {isSelf ? (
+          <Link
+            href="/settings"
+            className="block w-full rounded-lg bg-brand-500 py-2 text-center text-sm font-semibold text-white"
+          >
+            Edit profile
+          </Link>
+        ) : (
+          <div className="flex gap-3 pt-4">
+            <button onClick={() => setShowReport(true)} className="flex-1 rounded-lg border border-gray-300 py-2 text-sm text-gray-600">
+              Report
+            </button>
+            <button onClick={blockUser} className="flex-1 rounded-lg border border-red-300 py-2 text-sm text-red-600">
+              Block
+            </button>
+          </div>
+        )}
       </div>
 
       {showReport && (
