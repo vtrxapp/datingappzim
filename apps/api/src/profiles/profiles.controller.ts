@@ -16,6 +16,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { RequestUser } from '../common/types/authenticated-request';
 import { ProfilesService } from './profiles.service';
 import { UpdateBioDto } from './dto/update-bio.dto';
+import { UpdateCityDto } from './dto/update-city.dto';
 import { UpdateDisplayNameDto } from './dto/update-display-name.dto';
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // pre-compression ceiling; ImageCompressionService brings it down further
@@ -48,6 +49,11 @@ export class ProfilesController {
   @Post('me/display-name')
   updateDisplayName(@CurrentUser() user: RequestUser, @Body() dto: UpdateDisplayNameDto) {
     return this.profilesService.updateDisplayName(user.id, dto.displayName);
+  }
+
+  @Post('me/city')
+  updateCity(@CurrentUser() user: RequestUser, @Body() dto: UpdateCityDto) {
+    return this.profilesService.updateCity(user.id, dto.city);
   }
 
   @Post('me/photos')

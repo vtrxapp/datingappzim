@@ -1,3 +1,4 @@
+export * from './age';
 export * from './enums';
 export * from './questionnaire';
 export * from './plans';

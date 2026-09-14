@@ -2,13 +2,20 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { QUESTIONNAIRE, QuestionDefinition } from 'shared';
+import { computeAge, MIN_AGE, QUESTIONNAIRE, QuestionDefinition } from 'shared';
 import { api, ApiError } from '@/lib/api-client';
 import { useAuth } from '@/lib/auth-context';
 
 type AnswerMap = Record<string, unknown>;
 
 const NAME_STEP = 'DISPLAY_NAME';
+
+/** Latest birth date that still makes someone at least MIN_AGE today, so the
+ * date picker itself can't be scrolled into an underage range. */
+function maxDobForMinAge(): string {
+  const now = new Date();
+  return new Date(now.getFullYear() - MIN_AGE, now.getMonth(), now.getDate()).toISOString().slice(0, 10);
+}
 
 export default function OnboardingPage() {
   const { me, loading, refresh } = useAuth();
@@ -48,6 +55,9 @@ export default function OnboardingPage() {
     if (currentKey === NAME_STEP) return displayName.trim().length > 0;
     if (!question) return false;
     const value = answers[question.key];
+    if (question.key === 'DATE_OF_BIRTH') {
+      return typeof value === 'string' && value !== '' && computeAge(new Date(value)) >= MIN_AGE;
+    }
     if (!question.required) return true;
     if (question.type === 'MULTI_SELECT') return Array.isArray(value) && value.length > 0;
     if (question.type === 'RANGE') {
@@ -219,13 +229,18 @@ function QuestionStep({
       )}
 
       {question.type === 'TEXT' && question.key === 'DATE_OF_BIRTH' && (
-        <input
-          type="date"
-          value={(value as string) ?? ''}
-          onChange={(e) => onChange(e.target.value)}
-          max={new Date().toISOString().slice(0, 10)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-brand-400 focus:outline-none"
-        />
+        <>
+          <input
+            type="date"
+            value={(value as string) ?? ''}
+            onChange={(e) => onChange(e.target.value)}
+            max={maxDobForMinAge()}
+            className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-brand-400 focus:outline-none"
+          />
+          {typeof value === 'string' && value !== '' && computeAge(new Date(value)) < MIN_AGE && (
+            <p className="text-sm text-red-600">You must be at least {MIN_AGE} to use this app.</p>
+          )}
+        </>
       )}
     </div>
   );

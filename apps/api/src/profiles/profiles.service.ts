@@ -52,6 +52,11 @@ export class ProfilesService {
     return this.prisma.profile.update({ where: { userId }, data: { displayName } });
   }
 
+  async updateCity(userId: string, city: City) {
+    await this.assertOwnsProfile(userId);
+    return this.prisma.profile.update({ where: { userId }, data: { city } });
+  }
+
   async addPhoto(userId: string, fileBuffer: Buffer) {
     const profile = await this.assertOwnsProfile(userId);
     if (profile.photos.length >= MAX_PHOTOS) {

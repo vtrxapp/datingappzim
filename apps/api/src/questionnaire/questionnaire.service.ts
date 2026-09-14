@@ -1,12 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { City, Gender, QUESTIONNAIRE, QuestionDefinition, SubscriptionPlanId, SubscriptionStatus } from 'shared';
+import { City, Gender, MIN_AGE, QUESTIONNAIRE, QuestionDefinition, SubscriptionPlanId, SubscriptionStatus } from 'shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { ProfilesService } from '../profiles/profiles.service';
 import { computeAge } from '../profiles/profile-summary.util';
 import { SubmitQuestionnaireDto } from './dto/submit-questionnaire.dto';
-
-const MIN_AGE = 18;
 
 @Injectable()
 export class QuestionnaireService {
