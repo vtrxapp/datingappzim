@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MESSAGING_PROVIDER } from './messaging-provider.interface';
 import { MockMessagingProvider } from './providers/mock-messaging.provider';
+import { AfricasTalkingMessagingProvider } from './providers/africas-talking-messaging.provider';
 import { NotificationsService } from './notifications.service';
 
 @Module({
   providers: [
     {
-      // SMS_PROVIDER currently only supports "mock". Swap this factory to
-      // return a real gateway implementation (Twilio, Africa's Talking,
-      // WhatsApp Business API) once a provider is contracted.
       provide: MESSAGING_PROVIDER,
-      useClass: MockMessagingProvider,
+      useFactory: (configService: ConfigService) =>
+        configService.get('sms.provider') === 'africastalking'
+          ? new AfricasTalkingMessagingProvider(configService)
+          : new MockMessagingProvider(),
+      inject: [ConfigService],
     },
     NotificationsService,
   ],

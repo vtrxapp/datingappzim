@@ -15,16 +15,27 @@ export interface AppConfig {
     hashSecret: string;
   };
   sms: {
-    provider: 'mock' | 'twilio';
+    provider: 'mock' | 'africastalking';
+    africastalking: {
+      sandbox: boolean;
+      username: string;
+      apiKey: string;
+      senderId: string;
+    };
   };
   storage: {
-    provider: 'local' | 'r2';
+    provider: 'local' | 'r2' | 'supabase';
     r2: {
       accountId: string;
       accessKeyId: string;
       secretAccessKey: string;
       bucket: string;
       publicBaseUrl: string;
+    };
+    supabase: {
+      url: string;
+      serviceRoleKey: string;
+      bucket: string;
     };
   };
   payment: {
@@ -57,16 +68,27 @@ export default (): AppConfig => ({
       process.env.OTP_HASH_SECRET ?? process.env.JWT_ACCESS_SECRET ?? 'dev-otp-secret-change-me',
   },
   sms: {
-    provider: (process.env.SMS_PROVIDER as 'mock' | 'twilio') ?? 'mock',
+    provider: (process.env.SMS_PROVIDER as 'mock' | 'africastalking') ?? 'mock',
+    africastalking: {
+      sandbox: (process.env.AT_SANDBOX ?? 'true') !== 'false',
+      username: process.env.AT_USERNAME ?? '',
+      apiKey: process.env.AT_API_KEY ?? '',
+      senderId: process.env.AT_SENDER_ID ?? '',
+    },
   },
   storage: {
-    provider: (process.env.STORAGE_PROVIDER as 'local' | 'r2') ?? 'local',
+    provider: (process.env.STORAGE_PROVIDER as 'local' | 'r2' | 'supabase') ?? 'local',
     r2: {
       accountId: process.env.R2_ACCOUNT_ID ?? '',
       accessKeyId: process.env.R2_ACCESS_KEY_ID ?? '',
       secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
       bucket: process.env.R2_BUCKET ?? 'tariro-media',
       publicBaseUrl: process.env.R2_PUBLIC_BASE_URL ?? '',
+    },
+    supabase: {
+      url: process.env.SUPABASE_URL ?? '',
+      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
+      bucket: process.env.SUPABASE_STORAGE_BUCKET ?? 'tariro-media',
     },
   },
   payment: {
