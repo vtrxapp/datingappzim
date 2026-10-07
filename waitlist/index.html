@@ -87,7 +87,7 @@
   }
 
   /* ---------- hero ---------- */
-  .hero{padding:44px 0 40px;}
+  .hero{padding-top:44px; padding-bottom:40px;}
   .hero-head{margin-top:16px;}
   .hero h1{font-size:clamp(30px,7vw,42px); font-weight:600; line-height:1.12;}
   .hero h1 em{font-style:normal; color:var(--rust-mid);}
@@ -146,7 +146,7 @@
   /* ---------- preview carousel (replaces a plain feature list with a
      swipeable, App-Store-style strip — one card per differentiator) ---------- */
   .carousel{
-    display:flex; gap:12px; overflow-x:auto; padding:4px 22px 10px; margin:0 -22px;
+    display:flex; gap:12px; overflow-x:auto; padding:4px 0 10px;
     scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
   }
   .carousel::-webkit-scrollbar{display:none;}
@@ -285,8 +285,8 @@
 
   <hr class="rule">
 
-  <section class="wrap" style="padding-left:0; padding-right:0;">
-    <div class="section-head wrap">
+  <section class="wrap">
+    <div class="section-head">
       <p class="eyebrow">Why it's different</p>
       <h2>Built against the swipe, on purpose.</h2>
     </div>
