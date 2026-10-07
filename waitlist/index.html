@@ -109,6 +109,9 @@
     text-transform:uppercase; color:var(--rust-mid); display:flex; align-items:center; gap:9px;
   }
   .eyebrow::before{content:""; width:20px; height:1px; background:var(--rust-mid); flex:none;}
+  .hero .eyebrow::before{content:"✳️"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
+  #why-different .eyebrow::before{content:"💡"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
+  #waitlist .eyebrow::before{content:"👥"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
 
   /* ---------- header ---------- */
   header{padding:22px 0 6px;}
@@ -334,7 +337,7 @@
 
   <hr class="rule">
 
-  <section class="wrap">
+  <section class="wrap" id="why-different">
     <div class="section-head">
       <p class="eyebrow">Why it's different</p>
       <h2>Built against the swipe, on purpose.</h2>
