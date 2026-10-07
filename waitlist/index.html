@@ -132,8 +132,8 @@
     animation:deal .6s cubic-bezier(.2,.8,.2,1) backwards;
   }
   .intro-card .avatar{
-    width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    font-family:"Fraunces",serif; font-weight:600; font-size:16px; color:#fff9f6; margin-bottom:10px;
+    width:40px; height:40px; border-radius:50%; display:block; object-fit:cover;
+    margin-bottom:10px; background:var(--paper-line);
   }
   .intro-card .name{font-family:"Fraunces",serif; font-weight:600; font-size:15px;}
   .intro-card .city{font-size:12px; color:var(--ink-muted); margin-top:1px;}
@@ -183,15 +183,14 @@
 
   .mini-stack{display:flex; flex-direction:column; gap:8px; margin-top:auto;}
   .mini-card{background:var(--paper); border-radius:13px; padding:10px 12px; display:flex; align-items:center; gap:10px; box-shadow:0 8px 18px -10px rgba(90,45,20,.3);}
-  .mini-avatar{width:30px; height:30px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif; font-weight:600; font-size:13px; color:#fff9f6;}
+  .mini-avatar{width:30px; height:30px; border-radius:50%; flex:none; display:block; object-fit:cover; background:var(--paper-line);}
   .mini-name{font-family:"Fraunces",serif; font-weight:600; font-size:13.5px; color:var(--ink);}
   .mini-why{font-size:10.5px; color:var(--rust-mid); margin-top:1px;}
   .batch-end{font-size:11px; color:var(--ink-faint); text-align:center; font-style:italic; margin-top:2px;}
 
   .verify-card{background:var(--paper); border-radius:16px; padding:0; margin-top:auto; position:relative; overflow:hidden; box-shadow:0 10px 22px -12px rgba(43,97,87,.4);}
   .verify-photo{
-    aspect-ratio:4/3; background:linear-gradient(135deg,var(--rust-soft),var(--paper-line));
-    display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif; font-size:34px; color:var(--rust-mid);
+    aspect-ratio:4/3; width:100%; display:block; object-fit:cover; background:var(--paper-line);
   }
   .verify-badge{
     position:absolute; top:10px; right:10px; background:var(--success); color:#fff9f6; border-radius:999px;
@@ -271,19 +270,19 @@
 
     <div class="hand" aria-hidden="true">
       <div class="intro-card card-a">
-        <div class="avatar" style="background:#a63f21;">R</div>
+        <img class="avatar" src="https://images.pexels.com/photos/8727351/pexels-photo-8727351.jpeg?auto=compress&cs=tinysrgb&w=160&h=160&fit=crop" alt="" width="40" height="40">
         <div class="name">Rutendo, 29</div>
         <div class="city">Harare</div>
         <div class="why">Shared: family-oriented, hiking</div>
       </div>
       <div class="intro-card card-b">
-        <div class="avatar" style="background:#7f2f18;">T</div>
+        <img class="avatar" src="https://images.pexels.com/photos/30386124/pexels-photo-30386124.jpeg?auto=compress&cs=tinysrgb&w=160&h=160&fit=crop" alt="" width="40" height="40">
         <div class="name">Tinashe, 32</div>
         <div class="city">Harare</div>
         <div class="why">Shared: faith-centered, verified</div>
       </div>
       <div class="intro-card card-c">
-        <div class="avatar" style="background:#a9752f;">C</div>
+        <img class="avatar" src="https://images.pexels.com/photos/9851773/pexels-photo-9851773.jpeg?auto=compress&cs=tinysrgb&w=160&h=160&fit=crop" alt="" width="40" height="40">
         <div class="name">Chiedza, 27</div>
         <div class="city">Bulawayo</div>
         <div class="why">Shared: career-driven, coffee</div>
@@ -313,11 +312,11 @@
         <h3>One batch.<br>Not an endless feed.</h3>
         <div class="mini-stack">
           <div class="mini-card">
-            <span class="mini-avatar" style="background:#a63f21;">R</span>
+            <img class="mini-avatar" src="https://images.pexels.com/photos/8727351/pexels-photo-8727351.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="" width="30" height="30" loading="lazy">
             <span><span class="mini-name">Rutendo, 29</span><br><span class="mini-why">Shared: family-oriented, hiking</span></span>
           </div>
           <div class="mini-card">
-            <span class="mini-avatar" style="background:#7f2f18;">T</span>
+            <img class="mini-avatar" src="https://images.pexels.com/photos/30386124/pexels-photo-30386124.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop" alt="" width="30" height="30" loading="lazy">
             <span><span class="mini-name">Tinashe, 32</span><br><span class="mini-why">Shared: faith-centered, verified</span></span>
           </div>
           <p class="batch-end">— that's today's batch —</p>
@@ -327,7 +326,7 @@
       <div class="pcard bg-b">
         <h3>Verified, for<br>real confidence.</h3>
         <div class="verify-card">
-          <div class="verify-photo">C</div>
+          <img class="verify-photo" src="https://images.pexels.com/photos/9851773/pexels-photo-9851773.jpeg?auto=compress&cs=tinysrgb&w=640&fit=crop" alt="" loading="lazy">
           <span class="verify-badge">✓ Verified</span>
           <div class="verify-name">Chiedza, 27 · Bulawayo</div>
         </div>
