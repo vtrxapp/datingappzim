@@ -109,9 +109,8 @@
     text-transform:uppercase; color:var(--rust-mid); display:flex; align-items:center; gap:9px;
   }
   .eyebrow::before{content:""; width:20px; height:1px; background:var(--rust-mid); flex:none;}
-  .hero .eyebrow::before{content:"✳️"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
-  #why-different .eyebrow::before{content:"💡"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
-  #waitlist .eyebrow::before{content:"👥"; width:auto; height:auto; background:none; font-size:14px; line-height:1;}
+  .hero .eyebrow::before, #why-different .eyebrow::before, #waitlist .eyebrow::before{content:none;}
+  .eyebrow svg{flex:none;}
 
   /* ---------- header ---------- */
   header{padding:22px 0 6px;}
@@ -295,7 +294,7 @@
 
 <main>
   <section class="hero wrap">
-    <p class="eyebrow">Pre-launch · Harare &amp; Bulawayo</p>
+    <p class="eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Pre-launch · Harare &amp; Bulawayo</p>
     <div class="hero-head">
       <h1>No swiping.<br>No <em>infinite scroll</em>.</h1>
       <p class="hero-sub">
@@ -339,7 +338,7 @@
 
   <section class="wrap" id="why-different">
     <div class="section-head">
-      <p class="eyebrow">Why it's different</p>
+      <p class="eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9v.2h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 18.5h5M10 20.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Why it's different</p>
       <h2>Built against the swipe, on purpose.</h2>
     </div>
 
@@ -406,7 +405,7 @@
 
   <section class="wrap" id="waitlist">
     <div class="section-head">
-      <p class="eyebrow">Join before we open</p>
+      <p class="eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="7.5" cy="8.5" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M2.5 19c0-3 2.2-5.3 5-5.3 1 0 1.9.3 2.7.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="15.5" cy="8.5" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M9 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Join before we open</p>
       <h2>Be one of the first through the door.</h2>
       <p style="margin-top:10px; font-size:14.5px; color:var(--ink-muted); line-height:1.6;">
         Harare and Bulawayo first. Leave your details and we'll reach out the moment we open up.
