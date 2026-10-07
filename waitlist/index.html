@@ -178,10 +178,16 @@
   .pcard.bg-a{background:var(--rust-soft); color:var(--rust-deep);}
   .pcard.bg-b{background:var(--success-soft); color:var(--success);}
   .pcard.bg-brand{
-    background:linear-gradient(160deg,var(--rust),var(--rust-deep)); color:#fff9f6;
+    position:relative; overflow:hidden; color:#fff9f6;
     align-items:center; justify-content:center; text-align:center;
   }
-  .pcard.bg-brand h3{font-size:26px; color:#fff9f6;}
+  .pcard.bg-brand .brand-photo{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+  }
+  .pcard.bg-brand .brand-overlay{
+    position:absolute; inset:0; background:linear-gradient(160deg,var(--rust),var(--rust-deep)); opacity:.8; z-index:1;
+  }
+  .pcard.bg-brand h3{position:relative; z-index:2; font-size:26px; color:#fff9f6;}
   .scroll-hint{font-size:12px; color:var(--ink-faint); text-align:center; margin-top:2px; font-style:italic;}
 
   .mini-stack{display:flex; flex-direction:column; gap:8px; margin-top:auto;}
@@ -202,13 +208,17 @@
   .verify-name{padding:10px 12px; font-family:"Fraunces",serif; font-weight:600; font-size:14.5px; color:var(--ink);}
 
   .values-card{background:var(--paper); border-radius:16px; padding:14px; margin-top:auto; box-shadow:0 10px 22px -12px rgba(90,45,20,.3);}
-  .values-name{font-family:"Fraunces",serif; font-weight:600; font-size:14.5px; margin-bottom:8px; color:var(--ink);}
+  .values-top{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .values-avatar{width:34px; height:34px; border-radius:50%; flex:none; display:block; object-fit:cover; background:var(--paper-line);}
+  .values-name{font-family:"Fraunces",serif; font-weight:600; font-size:14.5px; color:var(--ink);}
   .value-chip{display:inline-block; font-size:11px; font-weight:700; background:var(--rust-soft); color:var(--rust-mid); border-radius:999px; padding:4px 10px; margin:0 5px 5px 0;}
 
   .safety-card{background:var(--paper); border-radius:16px; padding:14px; margin-top:auto; display:flex; flex-direction:column; gap:7px; box-shadow:0 10px 22px -12px rgba(43,97,87,.35);}
-  .safety-row{display:flex; justify-content:space-between; font-size:12.5px;}
+  .safety-row{display:flex; justify-content:space-between; align-items:center; font-size:12.5px;}
   .safety-row span:first-child{color:var(--ink-faint); font-weight:700; text-transform:uppercase; font-size:10px; letter-spacing:.04em;}
   .safety-row span:last-child{color:var(--ink); font-weight:600;}
+  .safety-who{display:inline-flex; align-items:center; gap:6px;}
+  .safety-avatar{width:22px; height:22px; border-radius:50%; flex:none; display:block; object-fit:cover; background:var(--paper-line);}
   .safety-ok{margin-top:4px; font-size:11.5px; color:var(--success); font-weight:700; display:flex; align-items:center; gap:5px;}
   .safety-ok svg{flex:none;}
 
@@ -338,7 +348,10 @@
       <div class="pcard bg-a">
         <h3>Matched on what<br>actually matters.</h3>
         <div class="values-card">
-          <div class="values-name">Tendai, 31 · Harare</div>
+          <div class="values-top">
+            <img class="values-avatar" src="https://images.pexels.com/photos/19039168/pexels-photo-19039168.jpeg?auto=compress&cs=tinysrgb&w=140&h=140&fit=crop" alt="" width="34" height="34" loading="lazy">
+            <div class="values-name">Tendai, 31 · Harare</div>
+          </div>
           <span class="value-chip">Faith-centered</span>
           <span class="value-chip">Family-oriented</span>
           <span class="value-chip">Wants children</span>
@@ -348,7 +361,7 @@
       <div class="pcard bg-b">
         <h3>A safety net,<br>every time.</h3>
         <div class="safety-card">
-          <div class="safety-row"><span>Meeting</span><span>Rutendo, Sat 7PM</span></div>
+          <div class="safety-row"><span>Meeting</span><span class="safety-who"><img class="safety-avatar" src="https://images.pexels.com/photos/8727351/pexels-photo-8727351.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="" width="22" height="22" loading="lazy">Rutendo, Sat 7PM</span></div>
           <div class="safety-row"><span>Safety contact</span><span>Mai Chido</span></div>
           <p class="safety-ok">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke="currentColor" stroke-width="2"/></svg>
@@ -358,6 +371,8 @@
       </div>
 
       <div class="pcard bg-brand">
+        <img class="brand-photo" src="https://images.pexels.com/photos/29208356/pexels-photo-29208356.jpeg?auto=compress&cs=tinysrgb&w=600&fit=crop" alt="" loading="lazy">
+        <div class="brand-overlay"></div>
         <h3>It starts with<br><em style="font-style:normal; opacity:.85;">intention.</em></h3>
       </div>
     </div>
