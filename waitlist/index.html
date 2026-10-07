@@ -163,7 +163,8 @@
   /* ---------- preview carousel (replaces a plain feature list with a
      swipeable, App-Store-style strip — one card per differentiator) ---------- */
   .carousel{
-    display:flex; gap:12px; overflow-x:auto; padding:4px 0 10px;
+    display:flex; gap:12px; overflow-x:auto; padding:4px 22px 10px; margin:0 -22px;
+    scroll-padding:0 22px;
     scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
   }
   .carousel::-webkit-scrollbar{display:none;}
@@ -171,6 +172,8 @@
     flex:0 0 82%; max-width:340px; scroll-snap-align:start; border-radius:20px; padding:22px 20px;
     display:flex; flex-direction:column; gap:14px; min-height:260px;
   }
+  .pcard:first-child{scroll-margin-left:22px;}
+  .pcard:last-child{scroll-margin-right:22px;}
   .pcard h3{font-size:21px; font-weight:600; line-height:1.18;}
   .pcard.bg-a{background:var(--rust-soft); color:var(--rust-deep);}
   .pcard.bg-b{background:var(--success-soft); color:var(--success);}
