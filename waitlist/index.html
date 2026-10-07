@@ -261,6 +261,9 @@
   .form-success.is-visible{display:block;}
   .form-success h3{font-size:19px;}
   .form-success p{margin-top:8px; font-size:14px; color:var(--ink-muted); line-height:1.6;}
+  .share-prompt{margin-top:20px; padding-top:20px; border-top:1px solid var(--paper-line);}
+  .share-text{font-size:13.5px; color:var(--ink-muted); margin-bottom:12px;}
+  .share-btn{width:100%; justify-content:center;}
   .form-fields.is-hidden{display:none;}
 
   footer{padding:30px 0 44px; text-align:center;}
@@ -439,6 +442,13 @@
         <p>We'll reach out the moment we launch in your city. See you soon
           <svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M12 20s-7-4.4-9.5-9C1 8 2 4.5 5.5 4c2-.3 3.8.8 4.5 2.3C10.7 4.8 12.5 3.7 14.5 4c3.5.5 4.5 4 3 7-2.5 4.6-9.5 9-9.5 9Z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
         </p>
+        <div class="share-prompt">
+          <p class="share-text">Know someone in Harare or Bulawayo who'd want this too?</p>
+          <a class="btn-primary share-btn" id="wf-share" href="#" target="_blank" rel="noopener noreferrer">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.75 13.55L3 21l4.6-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 9.5c.3 3 2.7 5.3 5.7 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Invite a friend on WhatsApp
+          </a>
+        </div>
       </div>
     </form>
   </section>
@@ -453,42 +463,55 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  var SUPABASE_URL = "https://oppwmtqpfxlbogqpehtw.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_umVLIVhWcfk-cCdyR5GGEg_aG8Z-d6J";
-  var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
   var form = document.getElementById("waitlist-form");
   var submitBtn = document.getElementById("wf-submit");
   var fields = document.getElementById("form-fields");
   var success = document.getElementById("form-success");
   var errorEl = document.getElementById("form-error");
+  var shareLink = document.getElementById("wf-share");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  var shareMessage = "I just joined the Tariro waitlist — curated matchmaking for Harare & Bulawayo. No swiping, no endless scroll. Join me: https://tariro.website";
+  shareLink.href = "https://wa.me/?text=" + encodeURIComponent(shareMessage);
 
-    var name = document.getElementById("wf-name").value.trim();
-    var age = document.getElementById("wf-age").value.trim();
-    var phone = document.getElementById("wf-phone").value.trim();
-    var city = document.getElementById("wf-city").value;
-
-    errorEl.hidden = true;
+  if (typeof supabase === "undefined") {
+    // The Supabase CDN script above didn't load (ad blocker, flaky connection,
+    // CDN hiccup). Degrade visibly instead of leaving a submit button that
+    // silently does nothing when clicked.
+    errorEl.textContent = "Signup is temporarily unavailable — please refresh the page or try again shortly.";
+    errorEl.hidden = false;
     submitBtn.disabled = true;
-    submitBtn.textContent = "Joining…";
+  } else {
+    var SUPABASE_URL = "https://oppwmtqpfxlbogqpehtw.supabase.co";
+    var SUPABASE_ANON_KEY = "sb_publishable_umVLIVhWcfk-cCdyR5GGEg_aG8Z-d6J";
+    var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    db.from("waitlist_signups")
-      .insert({ name: name, age: Number(age), phone: phone, city: city })
-      .then(function (result) {
-        if (result.error) throw result.error;
-        fields.classList.add("is-hidden");
-        success.classList.add("is-visible");
-      })
-      .catch(function () {
-        errorEl.textContent = "Something went wrong saving your spot. Please try again.";
-        errorEl.hidden = false;
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Join the waitlist";
-      });
-  });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var name = document.getElementById("wf-name").value.trim();
+      var age = document.getElementById("wf-age").value.trim();
+      var phone = document.getElementById("wf-phone").value.trim();
+      var city = document.getElementById("wf-city").value;
+
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Joining…";
+
+      db.from("waitlist_signups")
+        .insert({ name: name, age: Number(age), phone: phone, city: city })
+        .then(function (result) {
+          if (result.error) throw result.error;
+          fields.classList.add("is-hidden");
+          success.classList.add("is-visible");
+        })
+        .catch(function () {
+          errorEl.textContent = "Something went wrong saving your spot. Please try again.";
+          errorEl.hidden = false;
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Join the waitlist";
+        });
+    });
+  }
 </script>
 
 </body>
