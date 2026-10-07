@@ -485,6 +485,48 @@
     var SUPABASE_ANON_KEY = "sb_publishable_umVLIVhWcfk-cCdyR5GGEg_aG8Z-d6J";
     var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // Lightweight funnel tracking: which stage of the page a visitor
+    // reaches before dropping off. No PII, no form field values — just a
+    // per-page-load session id and named milestones. Fire-and-forget: a
+    // tracking failure must never affect the actual signup flow.
+    var sessionId = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : (Date.now() + "-" + Math.random().toString(36).slice(2));
+
+    function track(eventName) {
+      db.from("waitlist_events")
+        .insert({ session_id: sessionId, event_name: eventName })
+        .then(function () {})
+        .catch(function () {});
+    }
+
+    track("page_view");
+
+    function trackOnceVisible(selector, eventName) {
+      var el = document.querySelector(selector);
+      if (!el || typeof IntersectionObserver === "undefined") return;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            track(eventName);
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+      observer.observe(el);
+    }
+
+    trackOnceVisible(".carousel", "scrolled_to_carousel");
+    trackOnceVisible("#waitlist", "scrolled_to_form");
+
+    var formStarted = false;
+    fields.addEventListener("focusin", function () {
+      if (!formStarted) {
+        formStarted = true;
+        track("form_started");
+      }
+    });
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -498,7 +540,7 @@
       submitBtn.textContent = "Joining…";
 
       db.from("waitlist_signups")
-        .insert({ name: name, age: Number(age), phone: phone, city: city })
+        .insert({ name: name, age: Number(age), phone: phone, city: city, session_id: sessionId })
         .then(function (result) {
           if (result.error) throw result.error;
           fields.classList.add("is-hidden");
