@@ -21,6 +21,8 @@
     --rust-deep:#7f2f18;
     --rust-mid:#a63f21;
     --rust-soft:#fbe4da;
+    --success:#2B6157;
+    --success-soft:#e4efec;
     --shadow: 0 18px 40px -18px rgba(90,45,20,0.35);
   }
   @media (prefers-color-scheme: dark){
@@ -35,6 +37,8 @@
       --rust-deep:#f2b28f;
       --rust-mid:#e8895f;
       --rust-soft:#3a2a21;
+      --success:#7bc9ae;
+      --success-soft:#1c2b26;
       --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
     }
   }
@@ -49,6 +53,8 @@
     --rust-deep:#f2b28f;
     --rust-mid:#e8895f;
     --rust-soft:#3a2a21;
+    --success:#7bc9ae;
+    --success-soft:#1c2b26;
     --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
   }
 
@@ -137,16 +143,55 @@
   .section-head{margin-bottom:22px;}
   .section-head h2{font-size:26px; font-weight:600; margin-top:10px;}
 
-  .why-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:26px;}
-  .why-list li{position:relative; padding-left:24px;}
-  .why-list li::before{
-    content:""; position:absolute; left:0; top:8px; width:9px; height:9px; border-radius:50%;
-    background:var(--rust-soft); border:1.5px solid var(--rust-mid);
+  /* ---------- preview carousel (replaces a plain feature list with a
+     swipeable, App-Store-style strip — one card per differentiator) ---------- */
+  .carousel{
+    display:flex; gap:12px; overflow-x:auto; padding:4px 22px 10px; margin:0 -22px;
+    scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
   }
-  .why-list strong{
-    display:block; font-family:"Fraunces",serif; font-weight:600; font-size:18px; margin-bottom:4px;
+  .carousel::-webkit-scrollbar{display:none;}
+  .pcard{
+    flex:0 0 82%; max-width:340px; scroll-snap-align:start; border-radius:20px; padding:22px 20px;
+    display:flex; flex-direction:column; gap:14px; min-height:260px;
   }
-  .why-list span{font-size:14.5px; color:var(--ink-muted); line-height:1.6;}
+  .pcard h3{font-size:21px; font-weight:600; line-height:1.18;}
+  .pcard.bg-a{background:var(--rust-soft); color:var(--rust-deep);}
+  .pcard.bg-b{background:var(--success-soft); color:var(--success);}
+  .pcard.bg-brand{
+    background:linear-gradient(160deg,var(--rust),var(--rust-deep)); color:#fff9f6;
+    align-items:center; justify-content:center; text-align:center;
+  }
+  .pcard.bg-brand h3{font-size:26px; color:#fff9f6;}
+  .scroll-hint{font-size:12px; color:var(--ink-faint); text-align:center; margin-top:2px; font-style:italic;}
+
+  .mini-stack{display:flex; flex-direction:column; gap:8px; margin-top:auto;}
+  .mini-card{background:var(--paper); border-radius:13px; padding:10px 12px; display:flex; align-items:center; gap:10px; box-shadow:0 8px 18px -10px rgba(90,45,20,.3);}
+  .mini-avatar{width:30px; height:30px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif; font-weight:600; font-size:13px; color:#fff9f6;}
+  .mini-name{font-family:"Fraunces",serif; font-weight:600; font-size:13.5px; color:var(--ink);}
+  .mini-why{font-size:10.5px; color:var(--rust-mid); margin-top:1px;}
+  .batch-end{font-size:11px; color:var(--ink-faint); text-align:center; font-style:italic; margin-top:2px;}
+
+  .verify-card{background:var(--paper); border-radius:16px; padding:0; margin-top:auto; position:relative; overflow:hidden; box-shadow:0 10px 22px -12px rgba(43,97,87,.4);}
+  .verify-photo{
+    aspect-ratio:4/3; background:linear-gradient(135deg,var(--rust-soft),var(--paper-line));
+    display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif; font-size:34px; color:var(--rust-mid);
+  }
+  .verify-badge{
+    position:absolute; top:10px; right:10px; background:var(--success); color:#fff9f6; border-radius:999px;
+    padding:4px 10px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:4px;
+  }
+  .verify-name{padding:10px 12px; font-family:"Fraunces",serif; font-weight:600; font-size:14.5px; color:var(--ink);}
+
+  .values-card{background:var(--paper); border-radius:16px; padding:14px; margin-top:auto; box-shadow:0 10px 22px -12px rgba(90,45,20,.3);}
+  .values-name{font-family:"Fraunces",serif; font-weight:600; font-size:14.5px; margin-bottom:8px; color:var(--ink);}
+  .value-chip{display:inline-block; font-size:11px; font-weight:700; background:var(--rust-soft); color:var(--rust-mid); border-radius:999px; padding:4px 10px; margin:0 5px 5px 0;}
+
+  .safety-card{background:var(--paper); border-radius:16px; padding:14px; margin-top:auto; display:flex; flex-direction:column; gap:7px; box-shadow:0 10px 22px -12px rgba(43,97,87,.35);}
+  .safety-row{display:flex; justify-content:space-between; font-size:12.5px;}
+  .safety-row span:first-child{color:var(--ink-faint); font-weight:700; text-transform:uppercase; font-size:10px; letter-spacing:.04em;}
+  .safety-row span:last-child{color:var(--ink); font-weight:600;}
+  .safety-ok{margin-top:4px; font-size:11.5px; color:var(--success); font-weight:700; display:flex; align-items:center; gap:5px;}
+  .safety-ok svg{flex:none;}
 
   /* ---------- form ---------- */
   .form-panel{
@@ -240,29 +285,64 @@
 
   <hr class="rule">
 
-  <section class="wrap">
-    <div class="section-head">
+  <section class="wrap" style="padding-left:0; padding-right:0;">
+    <div class="section-head wrap">
       <p class="eyebrow">Why it's different</p>
       <h2>Built against the swipe, on purpose.</h2>
     </div>
-    <ul class="why-list">
-      <li>
-        <strong>No swipe grid.</strong>
-        <span>There's no deck of profiles to swipe through, no scrolling past strangers. Just who we send you, one batch at a time.</span>
-      </li>
-      <li>
-        <strong>A short list, not a crowd.</strong>
-        <span>We don't show you everyone who's signed up nearby. A small, considered batch each day, picked specifically for you.</span>
-      </li>
-      <li>
-        <strong>Chat only when it's mutual.</strong>
-        <span>No cold messages from strangers. You only start talking once you've both said yes. Your number stays private even then.</span>
-      </li>
-      <li>
-        <strong>A safety check-in, every time.</strong>
-        <span>Tell us who you're meeting and when, before a first date. Miss your check-in and your safety contact gets an alert.</span>
-      </li>
-    </ul>
+
+    <div class="carousel">
+      <div class="pcard bg-a">
+        <h3>One batch.<br>Not an endless feed.</h3>
+        <div class="mini-stack">
+          <div class="mini-card">
+            <span class="mini-avatar" style="background:#a63f21;">R</span>
+            <span><span class="mini-name">Rutendo, 29</span><br><span class="mini-why">Shared: family-oriented, hiking</span></span>
+          </div>
+          <div class="mini-card">
+            <span class="mini-avatar" style="background:#7f2f18;">T</span>
+            <span><span class="mini-name">Tinashe, 32</span><br><span class="mini-why">Shared: faith-centered, verified</span></span>
+          </div>
+          <p class="batch-end">— that's today's batch —</p>
+        </div>
+      </div>
+
+      <div class="pcard bg-b">
+        <h3>Verified, for<br>real confidence.</h3>
+        <div class="verify-card">
+          <div class="verify-photo">C</div>
+          <span class="verify-badge">✓ Verified</span>
+          <div class="verify-name">Chiedza, 27 · Bulawayo</div>
+        </div>
+      </div>
+
+      <div class="pcard bg-a">
+        <h3>Matched on what<br>actually matters.</h3>
+        <div class="values-card">
+          <div class="values-name">Tendai, 31 · Harare</div>
+          <span class="value-chip">Faith-centered</span>
+          <span class="value-chip">Family-oriented</span>
+          <span class="value-chip">Wants children</span>
+        </div>
+      </div>
+
+      <div class="pcard bg-b">
+        <h3>A safety net,<br>every time.</h3>
+        <div class="safety-card">
+          <div class="safety-row"><span>Meeting</span><span>Rutendo, Sat 7PM</span></div>
+          <div class="safety-row"><span>Safety contact</span><span>Mai Chido</span></div>
+          <p class="safety-ok">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" stroke="currentColor" stroke-width="2"/></svg>
+            We'll check in if you don't
+          </p>
+        </div>
+      </div>
+
+      <div class="pcard bg-brand">
+        <h3>It starts with<br><em style="font-style:normal; opacity:.85;">intention.</em></h3>
+      </div>
+    </div>
+    <p class="scroll-hint">← swipe →</p>
   </section>
 
   <hr class="rule">
