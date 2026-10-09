@@ -128,6 +128,12 @@
     font-family:"Karla",sans-serif; font-weight:700; font-size:13.5px; color:var(--rust-mid);
     text-decoration:none; border-bottom:1px solid var(--rust-soft); padding-bottom:2px;
   }
+  .social-row{display:flex; align-items:center; gap:16px;}
+  .social-row a{display:flex; color:var(--ink-faint); transition:color .15s ease;}
+  .social-row a:hover{color:var(--rust-mid);}
+  .social-row svg{width:17px; height:17px;}
+  header .social-row{margin-top:14px;}
+  footer .social-row{justify-content:center; margin-top:14px;}
 
   /* ---------- hero ---------- */
   .hero{padding-top:44px; padding-bottom:40px;}
@@ -284,6 +290,26 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="social-x" viewBox="0 0 24 24">
+      <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="social-instagram" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16" rx="5" stroke="currentColor" stroke-width="1.7" fill="none"/>
+      <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" fill="none"/>
+      <circle cx="16.8" cy="7.2" r="1" fill="currentColor"/>
+    </symbol>
+    <symbol id="social-tiktok" viewBox="0 0 24 24">
+      <path d="M13.5 3.5v11a3.3 3.3 0 1 1-2.8-3.26" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M13.5 3.5c.5 2.3 2.2 3.9 4.4 4.1" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="social-facebook" viewBox="0 0 24 24">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
 <header class="wrap">
   <div class="header-row">
     <div class="brand-lockup">
@@ -296,6 +322,12 @@
       <span class="wordmark">tariro</span>
     </div>
     <a class="header-cta" href="#waitlist">Get on the list &gt;</a>
+  </div>
+  <div class="social-row">
+    <a href="https://x.com/tariroapp" target="_blank" rel="noopener noreferrer" aria-label="Tariro on X"><svg viewBox="0 0 24 24"><use href="#social-x"/></svg></a>
+    <a href="https://www.instagram.com/tariroapp/" target="_blank" rel="noopener noreferrer" aria-label="Tariro on Instagram"><svg viewBox="0 0 24 24"><use href="#social-instagram"/></svg></a>
+    <a href="https://www.tiktok.com/@tariroapp" target="_blank" rel="noopener noreferrer" aria-label="Tariro on TikTok"><svg viewBox="0 0 24 24"><use href="#social-tiktok"/></svg></a>
+    <a href="https://www.facebook.com/share/1eLp8Kp5i1/" target="_blank" rel="noopener noreferrer" aria-label="Tariro on Facebook"><svg viewBox="0 0 24 24"><use href="#social-facebook"/></svg></a>
   </div>
 </header>
 
@@ -468,6 +500,12 @@
     <span class="foot-word">Tariro</span>: matchmaking for marriage-minded adults 18+.<br>
     Currently building in Harare.
   </p>
+  <div class="social-row">
+    <a href="https://x.com/tariroapp" target="_blank" rel="noopener noreferrer" aria-label="Tariro on X"><svg viewBox="0 0 24 24"><use href="#social-x"/></svg></a>
+    <a href="https://www.instagram.com/tariroapp/" target="_blank" rel="noopener noreferrer" aria-label="Tariro on Instagram"><svg viewBox="0 0 24 24"><use href="#social-instagram"/></svg></a>
+    <a href="https://www.tiktok.com/@tariroapp" target="_blank" rel="noopener noreferrer" aria-label="Tariro on TikTok"><svg viewBox="0 0 24 24"><use href="#social-tiktok"/></svg></a>
+    <a href="https://www.facebook.com/share/1eLp8Kp5i1/" target="_blank" rel="noopener noreferrer" aria-label="Tariro on Facebook"><svg viewBox="0 0 24 24"><use href="#social-facebook"/></svg></a>
+  </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
